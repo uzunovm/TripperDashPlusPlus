@@ -372,11 +372,13 @@ private struct MapCacheSection: View {
             Button(role: .destructive) {
                 Task {
                     isClearing = true
-                    // Clear all three caches. Map tiles are the bulk;
+                    // Clear all caches (raster + vector tiles, limits, cameras). Map tiles are the bulk;
                     // clearing the speed-limit cache is also what fixes a
                     // stale pre-shadow-guard entry still showing a phantom
                     // limit (e.g. a 90 on a 50 street).
                     await TileDiskCache.shared.clearAll()
+                    await VectorTileDiskCache.shared.clearAll()
+                    VectorTileStore.shared.clearMemory()
                     await SpeedLimitService.shared.clearDiskCache()
                     await SpeedCameraService.shared.clearDiskCache()
                     await refresh()
@@ -409,7 +411,9 @@ private struct MapCacheSection: View {
         // Sum all three on-disk caches so the row reflects the true
         // footprint and the button enables whenever ANY cache has data
         // (not just map tiles).
-        let tiles = await TileDiskCache.shared.statsAll()
+        let raster = await TileDiskCache.shared.statsAll()
+        let vector = await VectorTileDiskCache.shared.stats()
+        let tiles = (count: raster.count + vector.count, bytes: raster.bytes + vector.bytes)
         let limits = await SpeedLimitService.shared.diskCacheStats()
         let cameras = await SpeedCameraService.shared.diskCacheStats()
         stats = (count: tiles.count + limits.count + cameras.count,

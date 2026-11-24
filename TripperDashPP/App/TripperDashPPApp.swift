@@ -44,6 +44,7 @@ struct TripperDashPPApp: App {
                     // cap. Runs on the actor so it can't race with
                     // live reads/writes from the prerender loop.
                     await TileDiskCache.shared.evictIfNeeded()
+                    await VectorTileDiskCache.shared.evictIfNeeded()
                 }
                 .task { await Tips.finishUpdates() }
         }

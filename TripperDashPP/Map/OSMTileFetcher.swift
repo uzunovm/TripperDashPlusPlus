@@ -100,8 +100,7 @@ actor OSMTileFetcher {
             directory: nil
         )
         config.httpAdditionalHeaders = [
-            "User-Agent": userAgent,
-            "Accept": "image/png,image/*;q=0.8"
+            "User-Agent": userAgent
         ]
         // Allow tile fetches over cellular — this IS a motorbike nav app.
         config.allowsCellularAccess = true
@@ -145,6 +144,23 @@ actor OSMTileFetcher {
         // one shared fetch and one cached PNG — that's the efficiency win.
         let key = "\(style.tileCacheNamespace)/\(z)/\(xWrapped)/\(y)"
 
+        var template = style.tileURLTemplate
+        if let s = shard(forX: xWrapped, y: y, subdomains: style.subdomains) {
+            template = template.replacingOccurrences(of: "{s}", with: s)
+        }
+        let url = URL(string: template
+            .replacingOccurrences(of: "{z}", with: "\(z)")
+            .replacingOccurrences(of: "{x}", with: "\(xWrapped)")
+            .replacingOccurrences(of: "{y}", with: "\(y)")
+        )!
+        return try await fetch(url: url, dedupeKey: key, accept: "image/png,image/*;q=0.8")
+    }
+
+    /// Fetch any URL through the same session, 4-request gate, retry
+    /// policy and in-flight dedupe as the raster tiles (vector tiles,
+    /// TileJSON). `dedupeKey` collapses concurrent requests for the same
+    /// resource onto one HTTP request.
+    func fetch(url: URL, dedupeKey key: String, accept: String) async throws -> Data {
         // Dedupe — coalesce with any in-flight task for the same key.
         if let existing = inFlightTasks[key] {
             do {
@@ -159,7 +175,7 @@ actor OSMTileFetcher {
 
         let task = Task<Data, Error> { [weak self] in
             guard let self else { throw OSMTileFetchError.cancelled }
-            return try await self.fetchWithSlot(style: style, z: z, x: xWrapped, y: y, key: key)
+            return try await self.fetchWithSlot(url: url, key: key, accept: accept)
         }
         inFlightTasks[key] = task
 
@@ -181,22 +197,15 @@ actor OSMTileFetcher {
 
     /// Wrap a single fetch with the concurrency-gate dance + retry
     /// loop. Split out so the dedupe wrapper above can share it.
-    private func fetchWithSlot(style: MapStyle, z: Int, x: Int, y: Int, key: String) async throws -> Data {
+    private func fetchWithSlot(url: URL, key: String, accept: String) async throws -> Data {
         await waitForSlot()
         defer { releaseSlot() }
 
-        var template = style.tileURLTemplate
-        if let s = shard(forX: x, y: y, subdomains: style.subdomains) {
-            template = template.replacingOccurrences(of: "{s}", with: s)
-        }
-        let url = URL(string: template
-            .replacingOccurrences(of: "{z}", with: "\(z)")
-            .replacingOccurrences(of: "{x}", with: "\(x)")
-            .replacingOccurrences(of: "{y}", with: "\(y)")
-        )!
         #if DEBUG
-        log.debug("Tile URL [\(style.tileCacheNamespace, privacy: .public)]: \(url.absoluteString, privacy: .public)")
+        log.debug("Tile URL [\(key, privacy: .public)]: \(url.absoluteString, privacy: .public)")
         #endif
+        var request = URLRequest(url: url)
+        request.setValue(accept, forHTTPHeaderField: "Accept")
 
         var lastError: Error?
         for attempt in 0...maxRetries {
@@ -207,7 +216,7 @@ actor OSMTileFetcher {
                 try? await Task.sleep(nanoseconds: delay)
             }
             do {
-                let (data, response) = try await session.data(from: url)
+                let (data, response) = try await session.data(for: request)
                 guard let http = response as? HTTPURLResponse else {
                     throw OSMTileFetchError.network(underlying: URLError(.badServerResponse))
                 }
