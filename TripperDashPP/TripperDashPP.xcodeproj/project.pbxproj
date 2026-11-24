@@ -7,12 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		08637C8D11C4EDA8BF33BAD8 /* mvt_14_8846_5552_prague.pbf.gz in Resources */ = {isa = PBXBuildFile; fileRef = B5AB31EC8C62C55C0DCB6DDE /* mvt_14_8846_5552_prague.pbf.gz */; };
+		2080DF2674B3B8F090CF71D6 /* MVTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */; };
+		2668E3B5EF6E54D959A960C2 /* mvt_14_8874_5591_rural.pbf in Resources */ = {isa = PBXBuildFile; fileRef = 4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */; };
+		33B2A54C592E9DA4ECCB9591 /* mvt_14_8848_5555_prague.pbf in Resources */ = {isa = PBXBuildFile; fileRef = 74BFF8467E95E5589790132A /* mvt_14_8848_5555_prague.pbf */; };
+		5A11F00000000000000000A2 /* SupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A11F00000000000000000A1 /* SupportView.swift */; };
+		5C17000000000000000000A1 /* RideIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17000000000000000000A0 /* RideIntents.swift */; };
+		5C17000000000000000000B1 /* ShortcutPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17000000000000000000B0 /* ShortcutPolicyTests.swift */; };
 		5E5E00000000000000000190 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5E000000000000000000C0 /* ShareViewController.swift */; };
 		5E5E000000000000000001A0 /* SharedDestinationResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DA5B100000000000DA5B10 /* SharedDestinationResolver.swift */; };
 		5E5E000000000000000001B0 /* SharedDeepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DA5B120000000000DA5B12 /* SharedDeepLink.swift */; };
 		5E5E000000000000000001C0 /* TripperDashShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5E5E000000000000000000B0 /* TripperDashShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6C0A00000000000000000002 /* LinkErrorMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C0A00000000000000000001 /* LinkErrorMappingTests.swift */; };
 		6CEEF1E3E02E5B291694EB0C /* InteractiveMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFF19EA4B0DFEC1244F8F68 /* InteractiveMapView.swift */; };
+		7ABC27DE310D46F9B5124CE5 /* ProtobufReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F64C474EFC9089C092024E3 /* ProtobufReader.swift */; };
 		7E57000000000000000000A1 /* SmokeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57000000000000000000A0 /* SmokeTests.swift */; };
 		7E57000000000000000000A3 /* WeatherAlongRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57000000000000000000A2 /* WeatherAlongRouteTests.swift */; };
 		7E57000000000000000000A5 /* RideStatsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E57000000000000000000A4 /* RideStatsTests.swift */; };
@@ -30,11 +38,11 @@
 		7E5700000000000000000B01 /* LegTailMapKitProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5700000000000000000B00 /* LegTailMapKitProbeTests.swift */; };
 		7E5700000000000000000C02 /* SavedRouteFromPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E5700000000000000000C01 /* SavedRouteFromPlanTests.swift */; };
 		7EED000000000000000000E1 /* TlvEtaFormatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED000000000000000000E0 /* TlvEtaFormatTests.swift */; };
+		7EED000000000000000000F1 /* ManeuverDistanceTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED000000000000000000F0 /* ManeuverDistanceTextTests.swift */; };
 		7EED00000000000000005E11 /* SunsetPillTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED00000000000000005E10 /* SunsetPillTests.swift */; };
 		7EED00000000000000006C11 /* CompassTapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED00000000000000006C10 /* CompassTapeTests.swift */; };
-		7EED000000000000000000F1 /* ManeuverDistanceTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED000000000000000000F0 /* ManeuverDistanceTextTests.swift */; };
 		7EED0000000000000000D1F1 /* ReconnectBudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED0000000000000000D1F0 /* ReconnectBudgetTests.swift */; };
-		5C17000000000000000000B1 /* ShortcutPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17000000000000000000B0 /* ShortcutPolicyTests.swift */; };
+		92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */; };
 		A486F0482FE2034700AA36C3 /* TripperDashPPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */; };
 		A486F0492FE2034700AA36C3 /* MapPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0442FE2034700AA36C3 /* MapPickerView.swift */; };
 		A486F04A2FE2034700AA36C3 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0412FE2034700AA36C3 /* AppStatus.swift */; };
@@ -47,7 +55,6 @@
 		A486F06A2FE2DD0800AA36C3 /* K1GPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0632FE2DD0800AA36C3 /* K1GPacket.swift */; };
 		A486F06B2FE2DD0800AA36C3 /* K1GConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0622FE2DD0800AA36C3 /* K1GConstants.swift */; };
 		A4B6F0012FE6000000AA36C3 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4B6F0002FE6000000AA36C3 /* LocationService.swift */; };
-		5C17000000000000000000A1 /* RideIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17000000000000000000A0 /* RideIntents.swift */; };
 		A4C7000000000000000A1001 /* RideActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C7000000000000000A0001 /* RideActivityAttributes.swift */; };
 		A4C7000000000000000A2001 /* RideActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C7000000000000000A0001 /* RideActivityAttributes.swift */; };
 		A4C7000000000000000B1001 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C7000000000000000B0001 /* LiveActivityController.swift */; };
@@ -117,6 +124,8 @@
 		B1DEA1E700000000000000F1 /* SpeedCameraAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DEA1E700000000000000F0 /* SpeedCameraAnnouncer.swift */; };
 		B1DEA1E700000000000000F3 /* RouteProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DEA1E700000000000000F2 /* RouteProjection.swift */; };
 		B7DA00000000000000000001 /* DashMediaControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DA00000000000000000002 /* DashMediaControl.swift */; };
+		D3D300000000000000000002 /* DashPerspective.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000001 /* DashPerspective.swift */; };
+		D3D300000000000000000004 /* DashPerspectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000003 /* DashPerspectiveTests.swift */; };
 		ED17000000000000000000A1 /* EditRouteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED17000000000000000000A0 /* EditRouteSheet.swift */; };
 		EFEF1002000000000000A001 /* PrerenderProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEF1001000000000000A001 /* PrerenderProgressView.swift */; };
 		F00DBABE00000000DEADBEEF /* MapViewSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADBEEF /* MapViewSource.swift */; };
@@ -138,9 +147,6 @@
 		FE70000000000000000000E1 /* SavedRouteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000E0 /* SavedRouteDetailView.swift */; };
 		FE70000000000000000000F1 /* SavedRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000F0 /* SavedRoute.swift */; };
 		FEA0000000000000000000B1 /* RouteProgressMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEA0000000000000000000B0 /* RouteProgressMap.swift */; };
-		D3D300000000000000000002 /* DashPerspective.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000001 /* DashPerspective.swift */; };
-		D3D300000000000000000004 /* DashPerspectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000003 /* DashPerspectiveTests.swift */; };
-		5A11F00000000000000000A2 /* SupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A11F00000000000000000A1 /* SupportView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -183,10 +189,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MVTDecoderTests.swift; sourceTree = "<group>"; };
+		1F64C474EFC9089C092024E3 /* ProtobufReader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProtobufReader.swift; sourceTree = "<group>"; };
+		4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8874_5591_rural.pbf; sourceTree = "<group>"; };
+		5A11F00000000000000000A1 /* SupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
+		5A11F00000000000000000A3 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
+		5C17000000000000000000A0 /* RideIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideIntents.swift; sourceTree = "<group>"; };
+		5C17000000000000000000B0 /* ShortcutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPolicyTests.swift; sourceTree = "<group>"; };
 		5E5E000000000000000000B0 /* TripperDashShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TripperDashShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E5E000000000000000000C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		5E5E000000000000000000D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C0A00000000000000000001 /* LinkErrorMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkErrorMappingTests.swift; sourceTree = "<group>"; };
+		74BFF8467E95E5589790132A /* mvt_14_8848_5555_prague.pbf */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8848_5555_prague.pbf; sourceTree = "<group>"; };
 		7BFF19EA4B0DFEC1244F8F68 /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
 		7E57000000000000000000A0 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		7E57000000000000000000A2 /* WeatherAlongRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAlongRouteTests.swift; sourceTree = "<group>"; };
@@ -206,17 +220,16 @@
 		7E5700000000000000000B00 /* LegTailMapKitProbeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegTailMapKitProbeTests.swift; sourceTree = "<group>"; };
 		7E5700000000000000000C01 /* SavedRouteFromPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRouteFromPlanTests.swift; sourceTree = "<group>"; };
 		7EED000000000000000000E0 /* TlvEtaFormatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TlvEtaFormatTests.swift; sourceTree = "<group>"; };
+		7EED000000000000000000F0 /* ManeuverDistanceTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManeuverDistanceTextTests.swift; sourceTree = "<group>"; };
 		7EED00000000000000005E10 /* SunsetPillTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunsetPillTests.swift; sourceTree = "<group>"; };
 		7EED00000000000000006C10 /* CompassTapeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompassTapeTests.swift; sourceTree = "<group>"; };
-		7EED000000000000000000F0 /* ManeuverDistanceTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManeuverDistanceTextTests.swift; sourceTree = "<group>"; };
 		7EED0000000000000000D1F0 /* ReconnectBudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectBudgetTests.swift; sourceTree = "<group>"; };
-		5C17000000000000000000B0 /* ShortcutPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortcutPolicyTests.swift; sourceTree = "<group>"; };
+		89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MVTDecoder.swift; sourceTree = "<group>"; };
 		A41A9C4D2FE20258009BF005 /* TripperDashPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripperDashPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A486F0412FE2034700AA36C3 /* AppStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripperDashPPApp.swift; sourceTree = "<group>"; };
 		A486F0442FE2034700AA36C3 /* MapPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPickerView.swift; sourceTree = "<group>"; };
 		A486F0452FE2034700AA36C3 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		5A11F00000000000000000A3 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
 		A486F0462FE2034700AA36C3 /* StreamingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingView.swift; sourceTree = "<group>"; };
 		A486F0512FE2069B00AA36C3 /* TripperDashPP-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TripperDashPP-Info.plist"; sourceTree = "<group>"; };
 		A486F05F2FE2DD0800AA36C3 /* BikeLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BikeLink.swift; sourceTree = "<group>"; };
@@ -226,7 +239,6 @@
 		A486F0632FE2DD0800AA36C3 /* K1GPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = K1GPacket.swift; sourceTree = "<group>"; };
 		A486F0642FE2DD0800AA36C3 /* RsaHandshake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RsaHandshake.swift; sourceTree = "<group>"; };
 		A4B6F0002FE6000000AA36C3 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		5C17000000000000000000A0 /* RideIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideIntents.swift; sourceTree = "<group>"; };
 		A4C7000000000000000A0001 /* RideActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideActivityAttributes.swift; sourceTree = "<group>"; };
 		A4C7000000000000000B0001 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityController.swift; sourceTree = "<group>"; };
 		A4C7000000000000000C0001 /* RideLiveActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideLiveActivity.swift; sourceTree = "<group>"; };
@@ -296,6 +308,7 @@
 		B1DEA1E700000000000000E0 /* MaxspeedParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxspeedParser.swift; sourceTree = "<group>"; };
 		B1DEA1E700000000000000F0 /* SpeedCameraAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedCameraAnnouncer.swift; sourceTree = "<group>"; };
 		B1DEA1E700000000000000F2 /* RouteProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteProjection.swift; sourceTree = "<group>"; };
+		B5AB31EC8C62C55C0DCB6DDE /* mvt_14_8846_5552_prague.pbf.gz */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8846_5552_prague.pbf.gz; sourceTree = "<group>"; };
 		B7DA00000000000000000002 /* DashMediaControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashMediaControl.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADBEEF /* MapViewSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewSource.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADBEF1 /* RouteTileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTileCache.swift; sourceTree = "<group>"; };
@@ -308,6 +321,8 @@
 		CAFEFEED00000000DEADBF03 /* MapStyleResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapStyleResolver.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADBF04 /* TileColorTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileColorTransform.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADC001 /* DashNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashNotice.swift; sourceTree = "<group>"; };
+		D3D300000000000000000001 /* DashPerspective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspective.swift; sourceTree = "<group>"; };
+		D3D300000000000000000003 /* DashPerspectiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspectiveTests.swift; sourceTree = "<group>"; };
 		ED17000000000000000000A0 /* EditRouteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRouteSheet.swift; sourceTree = "<group>"; };
 		EFEF1001000000000000A001 /* PrerenderProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrerenderProgressView.swift; sourceTree = "<group>"; };
 		FE70000000000000000000A0 /* GPXParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GPXParser.swift; sourceTree = "<group>"; };
@@ -318,9 +333,6 @@
 		FE70000000000000000000E0 /* SavedRouteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRouteDetailView.swift; sourceTree = "<group>"; };
 		FE70000000000000000000F0 /* SavedRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedRoute.swift; sourceTree = "<group>"; };
 		FEA0000000000000000000B0 /* RouteProgressMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteProgressMap.swift; sourceTree = "<group>"; };
-		D3D300000000000000000001 /* DashPerspective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspective.swift; sourceTree = "<group>"; };
-		D3D300000000000000000003 /* DashPerspectiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspectiveTests.swift; sourceTree = "<group>"; };
-		5A11F00000000000000000A1 /* SupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -390,6 +402,8 @@
 				A4F0FFFF000000000000E402 /* RecentDestinationsStoreTests.swift */,
 				7E5700000000000000000A67 /* RideHistoryStoreTests.swift */,
 				D3D300000000000000000003 /* DashPerspectiveTests.swift */,
+				0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */,
+				AE1BF9D8AF5844F3D59DB3A3 /* Fixtures */,
 			);
 			path = TripperDashPPTests;
 			sourceTree = "<group>";
@@ -506,6 +520,8 @@
 				CAFEFEED00000000DEADBF03 /* MapStyleResolver.swift */,
 				CAFEFEED00000000DEADBF04 /* TileColorTransform.swift */,
 				D3D300000000000000000001 /* DashPerspective.swift */,
+				1F64C474EFC9089C092024E3 /* ProtobufReader.swift */,
+				89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -606,6 +622,17 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
+		AE1BF9D8AF5844F3D59DB3A3 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				74BFF8467E95E5589790132A /* mvt_14_8848_5555_prague.pbf */,
+				4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */,
+				B5AB31EC8C62C55C0DCB6DDE /* mvt_14_8846_5552_prague.pbf.gz */,
+			);
+			name = Fixtures;
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
 		B1DEA1E700000000000000C0 /* RideAlerts */ = {
 			isa = PBXGroup;
 			children = (
@@ -635,8 +662,6 @@
 			dependencies = (
 			);
 			name = TripperDashShare;
-			packageProductDependencies = (
-			);
 			productName = TripperDashShare;
 			productReference = 5E5E000000000000000000B0 /* TripperDashShare.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -655,8 +680,6 @@
 				7E5700000000000000000101 /* PBXTargetDependency */,
 			);
 			name = TripperDashPPTests;
-			packageProductDependencies = (
-			);
 			productName = TripperDashPPTests;
 			productReference = 7E57000000000000000000B0 /* TripperDashPPTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -678,8 +701,6 @@
 				A4C700000000000000141000 /* PBXTargetDependency */,
 			);
 			name = TripperDashPP;
-			packageProductDependencies = (
-			);
 			productName = TripperDashPP;
 			productReference = A41A9C4D2FE20258009BF005 /* TripperDashPP.app */;
 			productType = "com.apple.product-type.application";
@@ -697,8 +718,6 @@
 			dependencies = (
 			);
 			name = TripperDashWidgets;
-			packageProductDependencies = (
-			);
 			productName = TripperDashWidgets;
 			productReference = A4C7000000000000000F0001 /* TripperDashWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -737,8 +756,6 @@
 			);
 			mainGroup = A41A9C442FE20258009BF005;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A41A9C4E2FE20258009BF005 /* Products */;
 			projectDirPath = "";
@@ -764,6 +781,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33B2A54C592E9DA4ECCB9591 /* mvt_14_8848_5555_prague.pbf in Resources */,
+				2668E3B5EF6E54D959A960C2 /* mvt_14_8874_5591_rural.pbf in Resources */,
+				08637C8D11C4EDA8BF33BAD8 /* mvt_14_8846_5552_prague.pbf.gz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -842,6 +862,7 @@
 				A4F0FFFF000000000000E502 /* RecentDestinationsStoreTests.swift in Sources */,
 				7E5700000000000000000A68 /* RideHistoryStoreTests.swift in Sources */,
 				D3D300000000000000000004 /* DashPerspectiveTests.swift in Sources */,
+				92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -950,6 +971,8 @@
 				A4F0FFFF000000000000E501 /* RecentDestinationsStore.swift in Sources */,
 				D3D300000000000000000002 /* DashPerspective.swift in Sources */,
 				5A11F00000000000000000A2 /* SupportView.swift in Sources */,
+				7ABC27DE310D46F9B5124CE5 /* ProtobufReader.swift in Sources */,
+				2080DF2674B3B8F090CF71D6 /* MVTDecoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
