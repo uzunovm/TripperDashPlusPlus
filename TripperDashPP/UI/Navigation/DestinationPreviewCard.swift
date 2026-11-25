@@ -40,17 +40,15 @@ struct DestinationPreviewCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Header: icon + name/address + close.
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: alreadyFavorited
-                      ? (store.matchingFavorite(for: destination)?.resolvedIconSymbol ?? "star.fill")
-                      : "mappin.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(alreadyFavorited ? Color.accentColor : .red)
-                    .frame(width: 28)
+            HStack(alignment: .top, spacing: 12) {
+                IconTile(systemImage: alreadyFavorited
+                         ? (store.matchingFavorite(for: destination)?.resolvedIconSymbol ?? "star.fill")
+                         : "mappin.and.ellipse",
+                         size: 48)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text(destination.name)
-                        .font(.headline)
+                        .font(.title3.weight(.bold))
                         .lineLimit(1)
                     if let addr = destination.addressLine, !addr.isEmpty {
                         Text(addr)
@@ -72,57 +70,51 @@ struct DestinationPreviewCard: View {
                 Button {
                     onClose()
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.secondary)
+                        .frame(width: 30, height: 30)
+                        .background(Theme.surface2, in: Circle())
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .padding(.top, -8)
+                .padding(.trailing, -8)
                 .accessibilityLabel("Close")
             }
 
             // Action row.
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 if alreadyFavorited {
                     Label("Saved", systemImage: "star.fill")
-                        .font(.subheadline.weight(.medium))
+                        .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(Theme.surface2, in: Capsule())
                 } else {
                     Button {
                         onAddToFavorites(destination)
                     } label: {
                         Label("Add to favorites", systemImage: "star")
-                            .font(.subheadline.weight(.medium))
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+                            .font(.subheadline.weight(.semibold))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(SecondaryCTAButtonStyle())
                 }
 
                 Button {
                     onCalculateRoutes(destination)
                 } label: {
                     Label("Routes", systemImage: "arrow.triangle.turn.up.right.diamond.fill")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 10))
-                        .foregroundStyle(.white)
+                        .font(.subheadline.weight(.bold))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PrimaryCTAButtonStyle())
+                .frame(height: 50)
             }
         }
-        .padding(14)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(.separator, lineWidth: 0.5)
-        )
-        .shadow(color: .black.opacity(0.18), radius: 10, y: 4)
-        .padding(.horizontal, 10)
+        .padding(20)
+        .glassCard(cornerRadius: 28)
+        .padding(.horizontal, 12)
         .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 }

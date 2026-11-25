@@ -51,16 +51,19 @@ struct WaypointListView: View {
                 .onMove(perform: moveRows)
                 .onDelete(perform: deleteRows)
             } header: {
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     Text("Stops")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(.primary)
                     Spacer()
                     if plan.isComputed {
                         Text("\(plan.totalDistanceDisplay) · \(plan.totalTravelTimeDisplay)")
-                            .font(.caption)
+                            .font(.subheadline.weight(.semibold))
+                            .monospacedDigit()
                             .foregroundStyle(.secondary)
-                            .textCase(nil)
                     }
                 }
+                .textCase(nil)
             }
 
             Section {
@@ -68,16 +71,19 @@ struct WaypointListView: View {
                     onAddStop()
                 } label: {
                     Label {
-                        Text("Add stop").foregroundStyle(.primary)
+                        Text("Add stop").font(.body.weight(.semibold)).foregroundStyle(Theme.brandText)
                     } icon: {
-                        Image(systemName: "plus.circle.fill").foregroundStyle(Color.accentColor)
+                        Image(systemName: "plus.circle.fill").foregroundStyle(Theme.brandText)
                     }
+                    .frame(minHeight: 44)
                 }
                 .buttonStyle(.plain)
             }
         }
         .environment(\.editMode, .constant(.active))  // always reorder-enabled
         .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(Theme.background)
     }
 
     // MARK: - Row
@@ -88,7 +94,7 @@ struct WaypointListView: View {
             stopBadge(index: index)
             VStack(alignment: .leading, spacing: 2) {
                 Text(wp.name)
-                    .font(.subheadline.weight(.medium))
+                    .font(.body.weight(.semibold))
                     .lineLimit(1)
                 if let addr = wp.addressLine, !addr.isEmpty {
                     Text(addr)
@@ -115,26 +121,20 @@ struct WaypointListView: View {
         let isDestination = index == plan.waypoints.count - 1
         ZStack {
             Circle()
-                .fill(badgeColor(isOrigin: isOrigin, isDestination: isDestination).opacity(0.15))
-                .frame(width: 28, height: 28)
+                .fill(isOrigin ? Theme.ok.opacity(0.18) : (isDestination ? Theme.brand : Theme.surface2))
+                .frame(width: 32, height: 32)
             if isOrigin {
-                Image(systemName: "location.fill").font(.caption2)
-                    .foregroundStyle(badgeColor(isOrigin: true, isDestination: false))
+                Image(systemName: "location.fill").font(.caption.weight(.bold))
+                    .foregroundStyle(Theme.ok)
             } else if isDestination {
-                Image(systemName: "flag.checkered").font(.caption2)
-                    .foregroundStyle(badgeColor(isOrigin: false, isDestination: true))
+                Image(systemName: "flag.checkered").font(.caption.weight(.bold))
+                    .foregroundStyle(Theme.onBrand)
             } else {
                 Text("\(index)")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(badgeColor(isOrigin: false, isDestination: false))
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.primary)
             }
         }
-    }
-
-    private func badgeColor(isOrigin: Bool, isDestination: Bool) -> Color {
-        if isOrigin { return .green }
-        if isDestination { return .red }
-        return .blue
     }
 
     @ViewBuilder

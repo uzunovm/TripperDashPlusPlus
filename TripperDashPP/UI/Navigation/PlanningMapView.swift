@@ -251,7 +251,7 @@ struct PlanningMapView: UIViewRepresentable {
                 view.markerTintColor = .systemRed
                 view.glyphImage = UIImage(systemName: "flag.checkered")
             } else {
-                view.markerTintColor = .systemBlue
+                view.markerTintColor = UIColor(hex: 0xFF8A1F)
                 view.glyphText = "\(wp.ordinal)"
             }
             return view

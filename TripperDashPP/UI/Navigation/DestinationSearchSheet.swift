@@ -39,10 +39,18 @@ struct DestinationSearchSheet: View {
                 if search.query.isEmpty {
                     let recents = status.recentDestinationsStore.items
                     if recents.isEmpty {
-                        Section("Tip") {
-                            Text("Start typing an address, city, or place name. Results are biased toward your current location.")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+                        Section {
+                            Label {
+                                Text("Start typing an address, city, or place name. Results are biased toward your current location.")
+                                    .font(.subheadline)
+                            } icon: {
+                                Image(systemName: "info.circle.fill")
+                                    .foregroundStyle(Theme.brandText)
+                            }
+                            .padding(.vertical, 6)
+                            .listRowBackground(Theme.brandSoft)
+                        } header: {
+                            Text("Tip").statLabelStyle()
                         }
                     } else {
                         Section {
@@ -52,17 +60,19 @@ struct DestinationSearchSheet: View {
                                     status.recentDestinationsStore.record(r.destination)
                                     dismiss()
                                 } label: {
-                                    Label {
+                                    HStack(spacing: 12) {
+                                        IconTile(systemImage: "clock.arrow.circlepath", tint: .secondary,
+                                                 background: Theme.surface2, size: 38)
                                         VStack(alignment: .leading, spacing: 2) {
-                                            Text(r.name).foregroundStyle(.primary)
+                                            Text(r.name).font(.body.weight(.semibold)).foregroundStyle(.primary)
                                             if let line = r.addressLine, !line.isEmpty {
                                                 Text(line).font(.footnote).foregroundStyle(.secondary)
+                                                    .lineLimit(1)
                                             }
                                         }
-                                    } icon: {
-                                        Image(systemName: "clock.arrow.circlepath")
-                                            .foregroundStyle(.secondary)
+                                        Spacer(minLength: 0)
                                     }
+                                    .frame(minHeight: 52)
                                 }
                                 .buttonStyle(.plain)
                                 .contentShape(Rectangle())
@@ -76,13 +86,15 @@ struct DestinationSearchSheet: View {
                             }
                         } header: {
                             HStack {
-                                Text("Recent")
+                                Text("Recent").statLabelStyle()
                                 Spacer()
                                 Button("Clear") {
                                     status.recentDestinationsStore.clear()
                                 }
-                                .font(.footnote)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Theme.brandText)
                                 .textCase(nil)
+                                .frame(minHeight: 44)
                             }
                         }
                     }
@@ -119,12 +131,18 @@ struct DestinationSearchSheet: View {
                     Button {
                         Task { await pick(c) }
                     } label: {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(c.title).foregroundStyle(.primary)
-                            if !c.subtitle.isEmpty {
-                                Text(c.subtitle).font(.footnote).foregroundStyle(.secondary)
+                        HStack(spacing: 12) {
+                            IconTile(systemImage: "mappin.and.ellipse", size: 38)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(c.title).font(.body.weight(.semibold)).foregroundStyle(.primary)
+                                if !c.subtitle.isEmpty {
+                                    Text(c.subtitle).font(.footnote).foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
                             }
+                            Spacer(minLength: 0)
                         }
+                        .frame(minHeight: 52)
                     }
                     // .plain stops the List/Form from tinting the whole row
                     // label with the accent colour — otherwise the result
@@ -136,6 +154,8 @@ struct DestinationSearchSheet: View {
                     .disabled(resolving)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Theme.background)
             .searchable(text: $search.query, prompt: "Where to?")
             .navigationTitle("Search")
             .navigationBarTitleDisplayMode(.inline)

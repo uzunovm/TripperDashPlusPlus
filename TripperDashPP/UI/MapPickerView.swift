@@ -860,17 +860,17 @@ struct MapPickerView: View {
         let dest = plan.waypoints.last
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
-                Image(systemName: "location.fill").foregroundStyle(.green).frame(width: 18)
+                Image(systemName: "location.fill").foregroundStyle(Theme.ok).frame(width: 18)
                 Text(origin?.name ?? "Start").lineLimit(1)
             }
             HStack(spacing: 10) {
-                Image(systemName: "flag.checkered").foregroundStyle(.red).frame(width: 18)
+                Image(systemName: "flag.checkered").foregroundStyle(Theme.brandText).frame(width: 18)
                 Text(dest?.name ?? "Destination").lineLimit(1)
             }
             Divider()
             HStack {
                 Image(systemName: "point.topleft.down.curvedto.point.bottomright.up")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Theme.brandText)
                 Text("\(plan.waypoints.count - 1) via-points")
                     .foregroundStyle(.secondary)
                 Spacer()
