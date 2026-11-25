@@ -1,6 +1,6 @@
 # Install TripperDash++ on your own iPhone (from source)
 
-This runbook builds the **`rework`** branch of the fork `uzunovm/TripperDashPlusPlus` (vector map + UI redesign) and installs it on your iPhone. `main` on the fork mirrors upstream `kolaCZek/TripperDashPlusPlus`.
+This runbook builds the **`rework`** branch of the fork `uzunovm/TripperDashPlusPlus` (vector map + UI redesign). The `rework` build adds no entitlements or permissions beyond `main` and installs it on your iPhone. `main` on the fork mirrors upstream `kolaCZek/TripperDashPlusPlus`.
 
 Time: about 30 minutes the first time, most of it signing. After that, a rebuild takes 2 to 3 minutes.
 
@@ -215,6 +215,13 @@ Use this to install without the Mac nearby, and to get **Export log** in a non-D
 
 This checks the map, routing and the UI redesign. It does not test the dash link.
 
+While in Demo mode, check the `rework` map settings in **Settings → Map**:
+
+- **Map renderer**: **Vector** (new, tiles from `tiles.openfreemap.org`) or **Raster (classic)** (OpenStreetMap). Try both. If the vector map looks wrong, switch to Raster (classic) for the ride.
+- **Smooth position**: keeps you on the route line and glides the map between GPS fixes. Turn it off if the position looks laggy or snaps to the wrong road.
+
+Do this once on cellular with Wi-Fi off, so tiles for both renderers download the way they will on the bike.
+
 ### 6.2 fake_dash harness (tests the dash link, no bike)
 
 `tools/fake_dash/` is a Docker emulator of the Tripper: K1G control on UDP 2000, RTP video on UDP 5000. It accepts packets the real dash would reject, so it tests plumbing, not protocol correctness.
@@ -305,6 +312,8 @@ Unlock the iPhone and keep it unlocked while Xcode installs and launches.
 ### Map is blank, routing fails
 
 The phone is on the bike's Wi-Fi, which has no internet, and cellular is off for the app. Turn on iOS **Settings → TripperDash++ → Cellular Data** (and **Settings → Cellular → Cellular Data**).
+
+If only the **Vector** renderer is blank, `tiles.openfreemap.org` is unreachable or slow. Switch **Settings → Map → Map renderer** to **Raster (classic)**.
 
 ### Dash link fails or drops: export the log
 
