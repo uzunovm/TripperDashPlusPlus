@@ -1,6 +1,6 @@
 # Install TripperDash++ on your own iPhone (from source)
 
-This runbook builds the **`rework`** branch of the fork `uzunovm/TripperDashPlusPlus` (vector map + UI redesign). The `rework` build adds no entitlements or permissions beyond `main` and installs it on your iPhone. `main` on the fork mirrors upstream `kolaCZek/TripperDashPlusPlus`.
+This runbook builds the **`rework`** branch of the fork `uzunovm/TripperDashPlusPlus` (vector map + UI redesign) and installs it on your iPhone. `main` on the fork mirrors upstream `kolaCZek/TripperDashPlusPlus`. The `rework` build adds no entitlements or permissions beyond `main`, so the signing steps are the same for both.
 
 Time: about 30 minutes the first time, most of it signing. After that, a rebuild takes 2 to 3 minutes.
 
