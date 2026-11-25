@@ -272,6 +272,14 @@ struct StreamingView: View {
                     LabeledContent("Currently",
                                    value: status.effectiveMapStyle == .dark ? "Dark" : "Light")
                 }
+                Picker("Map renderer", selection: Binding(
+                    get: { status.mapStyleSettings.renderer },
+                    set: { status.setMapRenderer($0) }
+                )) {
+                    ForEach(MapStyleSettings.Renderer.allCases) { r in
+                        Text(r.label).tag(r)
+                    }
+                }
                 Toggle(isOn: Binding(
                     get: { status.mapStyleSettings.perspective },
                     set: { status.setMapPerspective($0) }
@@ -286,8 +294,13 @@ struct StreamingView: View {
                         Text(row.label).tag(row)
                     }
                 }
-                Text("Auto follows local sunrise and sunset from your GPS position. 3D tilts the map towards the road ahead and flattens it when you zoom out. Route progress shows the compass in free ride.")
+                Text("Auto follows local sunrise and sunset from your GPS position. Vector draws sharp roads and upright labels at any rotation; Raster is the classic OpenStreetMap picture. 3D tilts the map towards the road ahead and flattens it when you zoom out. Route progress shows the compass in free ride.")
                     .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(status.mapStyleSettings.renderer == .vector
+                     ? "Map data © OpenStreetMap contributors. Vector tiles © OpenMapTiles, served by OpenFreeMap."
+                     : "Map data and tiles © OpenStreetMap contributors.")
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
 

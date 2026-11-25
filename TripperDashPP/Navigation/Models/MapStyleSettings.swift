@@ -49,6 +49,34 @@ final class MapStyleSettings {
         didSet { persist() }
     }
 
+    /// Settings → Map → Map renderer.
+    enum Renderer: String, Codable, CaseIterable, Identifiable {
+        /// OpenMapTiles vector tiles drawn every frame (`VectorMapRenderer`).
+        case vector
+        /// Pre-baked OSM Carto raster composites (`RouteTileCache`).
+        case raster
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .vector: return "Vector"
+            case .raster: return "Raster (classic)"
+            }
+        }
+    }
+
+    /// Default Vector: sharp roads at any rotation, upright labels.
+    var renderer: Renderer = .vector {
+        didSet { persist() }
+    }
+
+    /// Settings → Map → Smooth position: snap the rider to the route and
+    /// predict between GPS fixes (`PositionPredictor`). Default on.
+    var smoothPosition = true {
+        didSet { persist() }
+    }
+
     // MARK: - Persistence
 
     private static let storeKey = "mapStyleSettings.v1"
@@ -57,6 +85,9 @@ final class MapStyleSettings {
         var mode: Mode
         // Optional: blobs saved before the 3D toggle lack it (→ on).
         var perspective: Bool?
+        // Optional: blobs saved before these settings existed (→ defaults).
+        var renderer: Renderer?
+        var smoothPosition: Bool?
     }
 
     init() {
@@ -69,10 +100,13 @@ final class MapStyleSettings {
         else { return }
         self.mode = p.mode
         self.perspective = p.perspective ?? true
+        self.renderer = p.renderer ?? .vector
+        self.smoothPosition = p.smoothPosition ?? true
     }
 
     private func persist() {
-        if let raw = try? JSONEncoder().encode(Persisted(mode: mode, perspective: perspective)) {
+        if let raw = try? JSONEncoder().encode(Persisted(mode: mode, perspective: perspective,
+                                                          renderer: renderer, smoothPosition: smoothPosition)) {
             UserDefaults.standard.set(raw, forKey: Self.storeKey)
         }
     }

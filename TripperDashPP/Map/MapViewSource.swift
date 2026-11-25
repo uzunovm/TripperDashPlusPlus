@@ -516,6 +516,38 @@ final class MapViewSource: NSObject, FrameSource {
     var perspectiveEnabled = true {
         didSet { if !perspectiveEnabled { displayedTilt = 0; coarsePositionCache = nil } }
     }
+
+    // MARK: - Vector map
+
+    /// Settings → Map → Map renderer (`AppStatus.setMapRenderer`). Vector
+    /// draws OpenMapTiles every frame (`VectorMapRenderer`) and bakes no
+    /// raster composites; Raster is the classic `RouteTileCache` path.
+    var renderer: MapStyleSettings.Renderer = .vector {
+        didSet {
+            guard renderer != oldValue else { return }
+            log.info("Map renderer → \(self.renderer.rawValue, privacy: .public)")
+            vectorBudget = RenderBudget()
+            pendingVectorBase = nil
+            // Raster needs its corridor bake, which Vector mode skipped:
+            // bake it now (vector-only frames until it lands).
+            if renderer == .raster, let route = currentRoute {
+                pendingRebakeRoute = route
+                if !pendingRebakeInFlight {
+                    Task { @MainActor in await performPendingRebake() }
+                }
+            }
+        }
+    }
+    var usesVectorRenderer: Bool { renderer == .vector }
+    /// Off-main renderer + its bitmap (one render at a time: the tick awaits).
+    private let vectorRenderer = VectorMapRenderer()
+    private var vectorBudget = RenderBudget()
+    private var vectorLogAt = CACurrentMediaTime()
+    private var lastVectorPrefetchAt: Date?
+    /// This tick's vector base map, rendered off the main actor before the
+    /// synchronous frame draw (`tickOnMain` → `drawVectorFrame`).
+    private var pendingVectorBase: (image: CGImage, rider: CLLocationCoordinate2D,
+                                    zoom: CGFloat, ground: Bool)?
     /// Tilt drawn on the last frame (degrees). Follows the zoom curve down
     /// at once, but climbs at most `tiltStepUp` per frame after a coverage
     /// cap lifts, so the view doesn't snap.
@@ -643,7 +675,7 @@ final class MapViewSource: NSObject, FrameSource {
         lastTileExtendAt = nil
         lastPositionFallbackAt = nil
         log.info("Tile cache installed: \(cache?.tiles.count ?? 0, privacy: .public) tiles")
-        if buildLayers, cache != nil, let route = currentRoute {
+        if buildLayers, cache != nil, !usesVectorRenderer, let route = currentRoute {
             buildFineLayer(route: route, around: lastFix?.coordinate)
         }
     }
@@ -768,6 +800,8 @@ final class MapViewSource: NSObject, FrameSource {
         // navigation starts) will pick up `currentStyle`. We still flip
         // the vector-fallback colours immediately via currentStyle.
         guard let route = currentRoute, let fix = lastFix else { return }
+        // The vector map restyles per frame; nothing to bake.
+        guard !usesVectorRenderer else { return }
 
         // A reroute bake in flight re-bakes itself in `currentStyle` when it
         // finishes (see `performPendingRebake`); a parallel style bake would
@@ -840,6 +874,15 @@ final class MapViewSource: NSObject, FrameSource {
     /// Terezín, 2026-06). Data/battery cost is bounded by the same
     /// throttle + idempotent bake set; a usable map outweighs it.
     func extendTileCache(near coord: CLLocationCoordinate2D) {
+        if usesVectorRenderer {
+            // Vector tiles around the rider + along the route ahead; the
+            // store skips what's cached or loading.
+            let now = Date()
+            if let last = lastVectorPrefetchAt, now.timeIntervalSince(last) < Self.tileExtendThrottle { return }
+            lastVectorPrefetchAt = now
+            VectorTileStore.shared.prefetch(rider: coord, route: routeDrawCoords)
+            return
+        }
         guard let cache = routeTileCache else { return }
         let now = Date()
         if let last = lastTileExtendAt,
@@ -928,6 +971,13 @@ final class MapViewSource: NSObject, FrameSource {
         // alternatives must go through the coalescing path (newest wins).
         guard pendingRebakeInFlight || route !== currentRoute else {
             log.info("Tile re-bake skipped — route already installed")
+            return
+        }
+        if usesVectorRenderer {
+            // No raster corridor in Vector mode; the new route's vector
+            // tiles come from the next `extendTileCache` prefetch.
+            currentRoute = route
+            lastVectorPrefetchAt = nil
             return
         }
         pendingRebakeRoute = route
@@ -1235,7 +1285,10 @@ extension MapViewSource {
         updateHeading()
         updateZoom()
 
-        // 2. Render + emit this tick unconditionally (fixed 4 fps).
+        // 2. Vector mode: the base map renders off the main actor first.
+        await prepareVectorBase()
+
+        // 3. Render + emit this tick unconditionally (fixed 4 fps).
         let now = CACurrentMediaTime()
 
         guard let buffer = renderMapViewToPixelBuffer() else {
@@ -1312,7 +1365,9 @@ extension MapViewSource {
         // Unified FG + BG path: always composite from the pre-rendered
         // tile cache (built when navigation starts) — works FG and BG
         // since it's pure CGContext, no MapKit live render.
-        if routeTileCache != nil {
+        if usesVectorRenderer {
+            drawVectorFrame(into: ctx)
+        } else if routeTileCache != nil {
             drawTileCacheFrame(into: ctx)
         } else {
             // Pre-navigation / no cache — vector-only on the style's background.
@@ -1367,6 +1422,100 @@ extension MapViewSource {
         // drawNavOverlay(into: ctx)
 
         return buffer
+    }
+}
+
+// MARK: - Vector map frame
+
+extension MapViewSource {
+    /// Render this tick's vector base map off the main actor into
+    /// `pendingVectorBase`. No fix yet → nothing (the frame draws the
+    /// vector-only fallback). Missing tiles are requested and drawn as
+    /// background until they load.
+    fileprivate func prepareVectorBase() async {
+        pendingVectorBase = nil
+        guard usesVectorRenderer, let fix = lastFix else { return }
+        let rider = fix.coordinate
+        let ground = perspectiveEnabled
+        let canvas = ground ? DashPerspective.groundSize : frameSize
+        let anchor = ground ? DashPerspective.groundAnchor : puckCenter
+        let center = VectorProjection.world(rider)
+        let zoom = currentZoom
+        let keys = VectorProjection.visibleTiles(canvas: canvas, anchor: anchor,
+                                                 headingDegrees: lastHeading, zoom: zoom, center: center)
+        let store = VectorTileStore.shared
+        var tiles: [VectorTile] = []
+        var missing: [VectorTileKey] = []
+        for k in keys {
+            if let t = store.tile(k) { tiles.append(t) } else { missing.append(k) }
+        }
+        if !missing.isEmpty { store.request(missing) }
+        let snapshot = VectorFrameSnapshot(
+            canvasSize: canvas, anchor: anchor, headingDegrees: lastHeading, zoom: zoom,
+            center: center, tiles: tiles,
+            palette: currentStyle == .dark ? .dark : .light,
+            detail: vectorBudget.detail)
+        let t0 = CACurrentMediaTime()
+        guard let image = await Self.renderVector(vectorRenderer, snapshot) else { return }
+        let ms = (CACurrentMediaTime() - t0) * 1000
+        if vectorBudget.record(ms: ms) {
+            log.notice("vector render: detail level \(self.vectorBudget.level, privacy: .public) (mean \(Int(self.vectorBudget.meanMs), privacy: .public) ms)")
+        }
+        if ms > RenderBudget.slowFrameMs {
+            log.notice("vector render slow frame \(Int(ms), privacy: .public) ms (\(tiles.count, privacy: .public) tiles)")
+        }
+        let nowT = CACurrentMediaTime()
+        if nowT - vectorLogAt >= 60 {
+            vectorLogAt = nowT
+            if let line = vectorBudget.takeLogLine() {
+                log.info("\(line, privacy: .public) tiles=\(tiles.count, privacy: .public) missing=\(missing.count, privacy: .public)")
+            }
+        }
+        // A 3D toggle during the await changes the canvas: drop the frame's
+        // base rather than draw it at the wrong size.
+        guard ground == perspectiveEnabled, usesVectorRenderer else { return }
+        pendingVectorBase = (image, rider, zoom, ground)
+    }
+
+    @concurrent nonisolated private static func renderVector(_ renderer: VectorMapRenderer,
+                                                             _ snapshot: VectorFrameSnapshot) async -> CGImage? {
+        renderer.render(snapshot)
+    }
+
+    /// Vector-mode frame: the pre-rendered base map under the same route,
+    /// markers and puck as the raster path.
+    fileprivate func drawVectorFrame(into ctx: CGContext) {
+        guard let base = pendingVectorBase,
+              base.ground == (activeGround != nil) else {
+            drawVectorOnlyFrame(into: ctx)
+            return
+        }
+        pendingVectorBase = nil
+        drawProjectedMap(.vector(image: base.image, zoom: base.zoom), riderCoord: base.rider, into: ctx)
+        drawVectorAttribution(into: ctx)
+    }
+
+    /// "© OpenMapTiles © OpenStreetMap", small, top centre: the one band
+    /// inside the glass circle (`docs/dash-visible-area.md`) no overlay
+    /// uses — pills and the speed sign sit low right, the turn card low
+    /// left, the progress bar / compass on the bottom edge. Fixed position,
+    /// so its pixels are identical every frame (free for the encoder).
+    fileprivate func drawVectorAttribution(into ctx: CGContext) {
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 9, weight: .semibold),
+            .foregroundColor: UIColor(cgColor: currentStyle.attributionInk),
+        ]
+        let line = CTLineCreateWithAttributedString(
+            NSAttributedString(string: VectorTileSource.attribution, attributes: attrs))
+        let width = CGFloat(CTLineGetTypographicBounds(line, nil, nil, nil))
+        // Baseline 17 px: the circle edge is at y ≈ 6 around x = 262 ± 70.
+        ctx.saveGState()
+        ctx.textMatrix = .identity
+        ctx.translateBy(x: (Self.visibleCenter.x - width / 2).rounded(), y: 17)
+        ctx.scaleBy(x: 1, y: -1)
+        ctx.textPosition = .zero
+        CTLineDraw(line, ctx)
+        ctx.restoreGState()
     }
 }
 
@@ -1535,11 +1684,45 @@ extension MapViewSource {
         into ctx: CGContext,
         underlays: [(RouteTile, CGImage)] = []
     ) {
+        drawProjectedMap(.raster(tile: tile, image: cg, underlays: underlays),
+                         riderCoord: riderCoord, into: ctx)
+    }
+
+    /// What lies under the route line: a baked raster tile (+ coarser
+    /// underlays in 3D), or the vector base map already rendered for this
+    /// frame's canvas (`VectorMapRenderer`), drawn as-is before any transform.
+    enum ProjectedMapBase {
+        case raster(tile: RouteTile, image: CGImage, underlays: [(RouteTile, CGImage)])
+        /// `zoom` is the zoom the image was rendered at (the tick's, which a
+        /// dash zoom press during the off-main render may since have moved).
+        case vector(image: CGImage, zoom: CGFloat)
+    }
+
+    private func drawProjectedMap(
+        _ base: ProjectedMapBase,
+        riderCoord: CLLocationCoordinate2D,
+        into ctx: CGContext
+    ) {
         // Pixels-per-degree — analytic Web Mercator values baked into the
         // tile (no probe/measure since the OSM migration). Ground truth
-        // for how many ctx-pixels span 1 degree on this bitmap.
-        let pxPerDegLon = tile.pxPerDegLon
-        let pxPerDegLat = tile.pxPerDegLat
+        // for how many ctx-pixels span 1 degree on this bitmap. The vector
+        // map is calibrated to the z15 base layer, so it uses z15's.
+        let pxPerDegLon: Double
+        let pxPerDegLat: Double
+        // Layer-compensated zoom (see the scale step below); outside the
+        // block because the markers after it need it too.
+        let drawZoom: CGFloat
+        switch base {
+        case .raster(let tile, _, _):
+            pxPerDegLon = tile.pxPerDegLon
+            pxPerDegLat = tile.pxPerDegLat
+            drawZoom = drawScale(of: tile)
+        case .vector(_, let zoom):
+            pxPerDegLon = WebMercator.pixelsPerDegreeLongitude(zoom: Self.baseLayerZoom)
+            pxPerDegLat = WebMercator.pixelsPerDegreeLatitude(latitude: riderCoord.latitude,
+                                                              zoom: Self.baseLayerZoom)
+            drawZoom = zoom
+        }
 
         // Anchor coordinate space on the user — they sit at the origin
         // after rotation; the tile draws offset from that.
@@ -1565,9 +1748,10 @@ extension MapViewSource {
 
         // Map into the ground buffer when tilted, else into the frame.
         let target = activeGround ?? ctx
-        // Layer-compensated zoom (see the scale step below); outside the
-        // block because the markers after it need it too.
-        let drawZoom = drawScale(of: tile)
+        if case .vector(let image, _) = base {
+            // Rendered for exactly this canvas, rider at `mapAnchor`.
+            drawImageUIKit(image, in: CGRect(origin: .zero, size: mapCanvasSize), ctx: target)
+        }
         do {
             let ctx = target
             ctx.saveGState()
@@ -1583,12 +1767,14 @@ extension MapViewSource {
             ctx.rotate(by: -lastHeading * .pi / 180)
             // 3D: the coarser layers first, each at its own scale, so the far
             // tilted view has map under it where the main tile ends.
-            for (under, underImage) in underlays {
-                let s = drawScale(of: under)
-                ctx.saveGState()
-                ctx.scaleBy(x: s, y: s)
-                drawImageUIKit(underImage, in: tileRect(under, rider: riderCoord), ctx: ctx)
-                ctx.restoreGState()
+            if case .raster(_, _, let underlays) = base {
+                for (under, underImage) in underlays {
+                    let s = drawScale(of: under)
+                    ctx.saveGState()
+                    ctx.scaleBy(x: s, y: s)
+                    drawImageUIKit(underImage, in: tileRect(under, rider: riderCoord), ctx: ctx)
+                    ctx.restoreGState()
+                }
             }
             // Speed-adaptive zoom (slow lerp; see targetZoom/updateZoom).
             // Applied AFTER rotation so the origin sits at the puck.
@@ -1604,7 +1790,9 @@ extension MapViewSource {
             // Draw the tile shifted by the delta from its own centre to the
             // user's position. Use `tile.center` (the requested centre — and
             // the geographic centre of the rendered image).
-            drawImageUIKit(cg, in: tileRect(tile, rider: riderCoord), ctx: ctx)
+            if case .raster(let tile, let cg, _) = base {
+                drawImageUIKit(cg, in: tileRect(tile, rider: riderCoord), ctx: ctx)
+            }
 
             // Alternative routes (thin grey), drawn BEFORE the active blue
             // line so the active route always sits on top. Same Y-DOWN
@@ -1730,7 +1918,14 @@ extension MapViewSource {
         }
         // 3D: puck onto the ground, warp it into the frame, sky on top.
         if activeGround != nil {
-            compositePerspective(into: ctx, tiles: [tile] + underlays.map { $0.0 }, rider: riderCoord)
+            switch base {
+            case .raster(let tile, _, let underlays):
+                compositePerspective(into: ctx, tiles: [tile] + underlays.map { $0.0 }, rider: riderCoord)
+            case .vector:
+                // The vector background fills the whole ground buffer: no
+                // coverage cap on the tilt.
+                compositePerspective(into: ctx, tiles: nil, rider: nil)
+            }
         }
 
         // Speed-camera POI markers — geo-anchored (they move/rotate WITH

@@ -127,9 +127,11 @@
 		B1DEA1E700000000000000F1 /* SpeedCameraAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DEA1E700000000000000F0 /* SpeedCameraAnnouncer.swift */; };
 		B1DEA1E700000000000000F3 /* RouteProjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DEA1E700000000000000F2 /* RouteProjection.swift */; };
 		B7DA00000000000000000001 /* DashMediaControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DA00000000000000000002 /* DashMediaControl.swift */; };
+		BBE49B00C8011E62E55BE63F /* VectorMapRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D051E7F6392165D3BDFEF93 /* VectorMapRenderer.swift */; };
 		CE380CB8420FD90FB1324349 /* VectorTileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4D3773F4BB2477C182602D /* VectorTileTests.swift */; };
 		D3D300000000000000000002 /* DashPerspective.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000001 /* DashPerspective.swift */; };
 		D3D300000000000000000004 /* DashPerspectiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3D300000000000000000003 /* DashPerspectiveTests.swift */; };
+		D640B94084DDC96340118CED /* RenderBudget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27EEE56A78B73982514109E8 /* RenderBudget.swift */; };
 		ED17000000000000000000A1 /* EditRouteSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED17000000000000000000A0 /* EditRouteSheet.swift */; };
 		EFEF1002000000000000A001 /* PrerenderProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFEF1001000000000000A001 /* PrerenderProgressView.swift */; };
 		F00DBABE00000000DEADBEEF /* MapViewSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADBEEF /* MapViewSource.swift */; };
@@ -143,6 +145,7 @@
 		F00DBABE00000000DEADBF03 /* MapStyleResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADBF03 /* MapStyleResolver.swift */; };
 		F00DBABE00000000DEADBF04 /* TileColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADBF04 /* TileColorTransform.swift */; };
 		F00DBABE00000000DEADC001 /* DashNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADC001 /* DashNotice.swift */; };
+		F5D92ECD03EDEEB6AD7684C8 /* VectorMapRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6693E68267915667D23464E0 /* VectorMapRendererTests.swift */; };
 		FE70000000000000000000A1 /* GPXParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000A0 /* GPXParser.swift */; };
 		FE70000000000000000000B1 /* SavedRoutesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000B0 /* SavedRoutesStore.swift */; };
 		FE70000000000000000000B2 /* SavedRoutePreviewMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000B3 /* SavedRoutePreviewMap.swift */; };
@@ -195,7 +198,9 @@
 /* Begin PBXFileReference section */
 		0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MVTDecoderTests.swift; sourceTree = "<group>"; };
 		0C69E75A175141D6ACC0851F /* VectorTileSource.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTileSource.swift; sourceTree = "<group>"; };
+		1D051E7F6392165D3BDFEF93 /* VectorMapRenderer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorMapRenderer.swift; sourceTree = "<group>"; };
 		1F64C474EFC9089C092024E3 /* ProtobufReader.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ProtobufReader.swift; sourceTree = "<group>"; };
+		27EEE56A78B73982514109E8 /* RenderBudget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RenderBudget.swift; sourceTree = "<group>"; };
 		4124AD46C78A895409A2EC19 /* VectorTile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTile.swift; sourceTree = "<group>"; };
 		4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8874_5591_rural.pbf; sourceTree = "<group>"; };
 		5A11F00000000000000000A1 /* SupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
@@ -205,6 +210,7 @@
 		5E5E000000000000000000B0 /* TripperDashShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TripperDashShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E5E000000000000000000C0 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		5E5E000000000000000000D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6693E68267915667D23464E0 /* VectorMapRendererTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorMapRendererTests.swift; sourceTree = "<group>"; };
 		6C0A00000000000000000001 /* LinkErrorMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkErrorMappingTests.swift; sourceTree = "<group>"; };
 		74BFF8467E95E5589790132A /* mvt_14_8848_5555_prague.pbf */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8848_5555_prague.pbf; sourceTree = "<group>"; };
 		7BFF19EA4B0DFEC1244F8F68 /* InteractiveMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMapView.swift; sourceTree = "<group>"; };
@@ -413,6 +419,7 @@
 				0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */,
 				AE1BF9D8AF5844F3D59DB3A3 /* Fixtures */,
 				BC4D3773F4BB2477C182602D /* VectorTileTests.swift */,
+				6693E68267915667D23464E0 /* VectorMapRendererTests.swift */,
 			);
 			path = TripperDashPPTests;
 			sourceTree = "<group>";
@@ -534,6 +541,8 @@
 				0C69E75A175141D6ACC0851F /* VectorTileSource.swift */,
 				4124AD46C78A895409A2EC19 /* VectorTile.swift */,
 				83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */,
+				1D051E7F6392165D3BDFEF93 /* VectorMapRenderer.swift */,
+				27EEE56A78B73982514109E8 /* RenderBudget.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -876,6 +885,7 @@
 				D3D300000000000000000004 /* DashPerspectiveTests.swift in Sources */,
 				92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */,
 				CE380CB8420FD90FB1324349 /* VectorTileTests.swift in Sources */,
+				F5D92ECD03EDEEB6AD7684C8 /* VectorMapRendererTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -989,6 +999,8 @@
 				7A91C814F067D70232CE55DC /* VectorTileSource.swift in Sources */,
 				800E681DE094F5C63AE73355 /* VectorTile.swift in Sources */,
 				9CA9127812AED7BB89D15D5F /* VectorTileStore.swift in Sources */,
+				BBE49B00C8011E62E55BE63F /* VectorMapRenderer.swift in Sources */,
+				D640B94084DDC96340118CED /* RenderBudget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1353,6 +1353,9 @@ struct MapPickerView: View {
         // renderer, and installing this cache would put the OLD route's
         // tiles back under the rider.
         guard status.mapViewSource.isCurrentRoute(route) else { return }
+        // Vector mode bakes no raster corridor: its tiles are prefetched
+        // along the route by `extendTileCache` from the first fix.
+        guard !status.mapViewSource.usesVectorRenderer else { return }
         let cache = RouteTileCache(style: status.mapViewSource.currentStyle)
         status.mapViewSource.setTileCache(cache, buildLayers: false)
         prerenderProgress = 0
