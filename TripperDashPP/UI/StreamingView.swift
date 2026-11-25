@@ -45,11 +45,11 @@ struct StreamingView: View {
     /// is busy.
     @ViewBuilder
     private func bikeRow(_ bike: SavedBike) -> some View {
-        HStack {
-            Image(systemName: "bicycle")
-                .foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            IconTile(systemImage: "motorcycle", size: 40)
             VStack(alignment: .leading, spacing: 2) {
                 Text(bike.displayName)
+                    .font(.body.weight(.semibold))
                 Text(bike.ssid)
                     .font(.caption.monospaced())
                     .foregroundStyle(.secondary)
@@ -59,8 +59,15 @@ struct StreamingView: View {
                 status.connect(to: bike)
                 dismiss()
             }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(Theme.onBrand)
+            .padding(.horizontal, 16)
+            .frame(minHeight: 36)
+            .background(Theme.brand, in: Capsule())
+            .frame(minHeight: 44)
             .buttonStyle(.borderless)
             .disabled(status.bikeLink.demoMode || !isEditableState)
+            .opacity(status.bikeLink.demoMode || !isEditableState ? 0.4 : 1)
         }
     }
 
@@ -72,6 +79,8 @@ struct StreamingView: View {
             showAddBike = true
         } label: {
             Label("Add bike", systemImage: "plus.circle.fill")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Theme.brandText)
         }
     }
 
@@ -345,6 +354,9 @@ struct StreamingView: View {
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Theme.background)
+        .tint(Theme.brandText)
         .navigationTitle("Settings")
         .task { canExportLog = await LogExportSection.isAvailable() }
         .navigationBarTitleDisplayMode(.inline)
