@@ -228,7 +228,7 @@ struct PlanningMapView: UIViewRepresentable {
             }
             let r = MKPolylineRenderer(polyline: poly)
             r.strokeColor = poly.isSelected
-                ? UIColor.systemBlue
+                ? UIColor(hex: 0xFF8A1F)
                 : UIColor.systemGray.withAlphaComponent(0.7)
             r.lineWidth = poly.isSelected ? 7 : 4
             r.lineCap = .round
