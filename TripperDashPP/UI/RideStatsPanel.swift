@@ -41,21 +41,27 @@ struct RideStatsPanel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label("Trip", systemImage: "gauge.with.needle")
+            HStack(spacing: 12) {
+                IconTile(systemImage: "gauge.with.needle", size: 36)
+                Text("Trip")
                     .font(.headline)
                 Spacer()
                 if status.rideStats.state == .paused {
-                    Text("PAUSED")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                    Text("Paused")
+                        .statLabelStyle()
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(Theme.surface2, in: Capsule())
                 }
                 Button {
                     onClose()
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.subheadline)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.secondary)
+                        .frame(width: 30, height: 30)
+                        .background(Theme.surface2, in: Circle())
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Hide trip summary")
@@ -63,7 +69,7 @@ struct RideStatsPanel: View {
 
             // Hero: distance ridden.
             Text(RideStatsFormatting.distance(stats.distanceMeters, imperial: imperial, useCommaDecimal: useCommaDecimal))
-                .font(.system(size: 40, weight: .bold, design: .rounded))
+                .font(.system(size: 44, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .contentTransition(.numericText())
 
@@ -100,33 +106,27 @@ struct RideStatsPanel: View {
                 } label: {
                     Label(savedRouteId == nil ? "Save ride" : "Saved to routes",
                           systemImage: savedRouteId == nil ? "bookmark" : "checkmark.circle.fill")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                        .background((savedRouteId == nil ? Color.accentColor : Color.green).opacity(0.15))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(SecondaryCTAButtonStyle(tint: savedRouteId == nil ? Theme.brandText : Theme.ok,
+                                                     height: 48))
                 .disabled(savedRouteId != nil)
                 .accessibilityLabel(savedRouteId == nil
                                     ? "Save this ride to your routes"
                                     : "Ride saved to your routes")
             }
         }
-        .padding()
+        .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .glassCard()
     }
 
     /// A small labelled figure: caption on top, value below.
     private func stat(_ label: String, _ value: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(label.uppercased())
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            Text(label)
+                .statLabelStyle()
             Text(value)
-                .font(.title3.weight(.semibold))
+                .font(.system(.title3, design: .rounded).weight(.bold))
                 .monospacedDigit()
         }
     }

@@ -305,7 +305,7 @@ struct InteractiveMapView: UIViewRepresentable {
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             if let line = overlay as? MKPolyline {
                 let r = MKPolylineRenderer(polyline: line)
-                r.strokeColor = UIColor.systemBlue.withAlphaComponent(0.85)
+                r.strokeColor = UIColor(hex: 0xFF8A1F).withAlphaComponent(0.9)
                 r.lineWidth = 6
                 r.lineCap = .round
                 r.lineJoin = .round

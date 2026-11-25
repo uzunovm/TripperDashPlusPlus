@@ -228,7 +228,7 @@ struct PlanningMapView: UIViewRepresentable {
             }
             let r = MKPolylineRenderer(polyline: poly)
             r.strokeColor = poly.isSelected
-                ? UIColor.systemBlue
+                ? UIColor(hex: 0xFF8A1F)
                 : UIColor.systemGray.withAlphaComponent(0.7)
             r.lineWidth = poly.isSelected ? 7 : 4
             r.lineCap = .round
@@ -251,7 +251,7 @@ struct PlanningMapView: UIViewRepresentable {
                 view.markerTintColor = .systemRed
                 view.glyphImage = UIImage(systemName: "flag.checkered")
             } else {
-                view.markerTintColor = .systemBlue
+                view.markerTintColor = UIColor(hex: 0xFF8A1F)
                 view.glyphText = "\(wp.ordinal)"
             }
             return view

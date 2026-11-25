@@ -132,7 +132,7 @@ struct SavedRoutePreviewMap: View {
                 cg.strokePath()
                 // Main line.
                 cg.addPath(path)
-                cg.setStrokeColor(UIColor.systemBlue.cgColor)
+                cg.setStrokeColor(UIColor(hex: 0xFF8A1F).cgColor)
                 cg.setLineWidth(4)
                 cg.strokePath()
             }

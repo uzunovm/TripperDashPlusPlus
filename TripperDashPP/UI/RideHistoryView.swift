@@ -51,8 +51,11 @@ struct RideHistoryView: View {
                             Text("Rides are kept for \(RideHistoryStore.retentionDays) days. Save one to your routes to keep it.")
                         }
                     }
+                    .scrollContentBackground(.hidden)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Theme.background)
             .navigationTitle("Ride history")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -70,19 +73,20 @@ struct RideHistoryView: View {
 
     private func row(_ ride: RideStats) -> some View {
         HStack(spacing: 12) {
+            IconTile(systemImage: "point.topleft.down.to.point.bottomright.curvepath", size: 40)
             VStack(alignment: .leading, spacing: 3) {
                 Text(ride.startedAt ?? .distantPast,
                      format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).hour().minute())
-                    .font(.body.weight(.medium))
+                    .font(.body.weight(.semibold))
                 Text("\(RideStatsFormatting.duration(ride.movingSeconds)) moving · avg \(RideStatsFormatting.speed(ride.averageSpeedMps, imperial: imperial))")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             Spacer(minLength: 8)
             Text(RideStatsFormatting.distance(ride.distanceMeters, imperial: imperial, useCommaDecimal: useCommaDecimal))
-                .font(.subheadline.monospacedDigit())
+                .font(.system(.headline, design: .rounded).weight(.bold).monospacedDigit())
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 }
 
@@ -109,53 +113,84 @@ private struct RideHistoryDetailView: View {
     private var useCommaDecimal: Bool { status.dashNavSettings.decimalSeparator == .comma }
 
     var body: some View {
-        Form {
-            if let route {
-                Section {
+        ScrollView {
+            VStack(spacing: 16) {
+                if let route {
                     SavedRoutePreviewMap(points: route.points)
                         .frame(height: 200)
-                        .listRowInsets(EdgeInsets())
+                        .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
+                            .strokeBorder(Theme.hairline, lineWidth: 1))
                 }
-            }
 
-            Section("Ride") {
-                LabeledContent("Distance", value: RideStatsFormatting.distance(ride.distanceMeters, imperial: imperial, useCommaDecimal: useCommaDecimal))
-                LabeledContent("Moving", value: RideStatsFormatting.duration(ride.movingSeconds))
-                LabeledContent("Elapsed", value: RideStatsFormatting.duration(ride.elapsedSeconds))
-                LabeledContent("Avg", value: RideStatsFormatting.speed(ride.averageSpeedMps, imperial: imperial))
-                LabeledContent("Max", value: RideStatsFormatting.speed(ride.maxSpeedMps, imperial: imperial))
-                LabeledContent("Ascent", value: "≈ " + RideStatsFormatting.elevation(ride.elevationGainMeters, imperial: imperial))
-            }
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Distance").statLabelStyle()
+                    Spacer()
+                    Text(RideStatsFormatting.distance(ride.distanceMeters, imperial: imperial, useCommaDecimal: useCommaDecimal))
+                        .font(.system(size: 34, weight: .bold, design: .rounded).monospacedDigit())
+                }
+                .padding(16)
+                .solidCard(cornerRadius: 20)
+                .accessibilityElement(children: .combine)
 
-            if let route {
-                Section {
-                    Button {
-                        guard !isSaved else { return }
-                        status.savedRoutesStore.add(route)
-                    } label: {
-                        Label(isSaved ? "Saved to routes" : "Save to routes",
-                              systemImage: isSaved ? "checkmark.circle.fill" : "bookmark")
-                    }
-                    .disabled(isSaved)
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 8) {
+                    tile("Moving", RideStatsFormatting.duration(ride.movingSeconds))
+                    tile("Elapsed", RideStatsFormatting.duration(ride.elapsedSeconds))
+                    tile("Ascent", "≈ " + RideStatsFormatting.elevation(ride.elevationGainMeters, imperial: imperial))
+                    tile("Avg", RideStatsFormatting.speed(ride.averageSpeedMps, imperial: imperial))
+                    tile("Max", RideStatsFormatting.speed(ride.maxSpeedMps, imperial: imperial))
+                }
 
-                    if let url = exportURL {
-                        ShareLink(item: url) {
-                            Label("Export as GPX", systemImage: "square.and.arrow.up")
-                        }
-                    } else {
+                if let route {
+                    VStack(spacing: 8) {
                         Button {
-                            exportURL = SavedRouteDetailView.writeGPX(route)
+                            guard !isSaved else { return }
+                            status.savedRoutesStore.add(route)
                         } label: {
-                            Label("Export as GPX", systemImage: "square.and.arrow.up")
+                            Label(isSaved ? "Saved to routes" : "Save to routes",
+                                  systemImage: isSaved ? "checkmark.circle.fill" : "bookmark")
+                        }
+                        .buttonStyle(PrimaryCTAButtonStyle())
+                        .disabled(isSaved)
+
+                        if let url = exportURL {
+                            ShareLink(item: url) {
+                                Label("Export as GPX", systemImage: "square.and.arrow.up")
+                            }
+                            .buttonStyle(SecondaryCTAButtonStyle(height: 52))
+                        } else {
+                            Button {
+                                exportURL = SavedRouteDetailView.writeGPX(route)
+                            } label: {
+                                Label("Export as GPX", systemImage: "square.and.arrow.up")
+                            }
+                            .buttonStyle(SecondaryCTAButtonStyle(height: 52))
                         }
                     }
+                    .padding(.top, 8)
                 }
             }
+            .padding(16)
         }
+        .background(Theme.background)
         .navigationTitle(Text(ride.startedAt ?? .distantPast, format: .dateTime.day().month(.abbreviated).hour().minute()))
         .navigationBarTitleDisplayMode(.inline)
         .task {
             if route == nil { route = RideStatsService.savedRoute(from: ride) }
         }
+    }
+
+    private func tile(_ label: String, _ value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label).statLabelStyle()
+            Text(value)
+                .font(.system(.headline, design: .rounded).weight(.bold).monospacedDigit())
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .solidCard(cornerRadius: 20)
+        .accessibilityElement(children: .combine)
     }
 }

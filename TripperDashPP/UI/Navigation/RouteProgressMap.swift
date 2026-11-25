@@ -218,7 +218,7 @@ struct RouteProgressMap: View {
             // Route ahead — the same blue the editor preview + dash use.
             strokeLine(cg, points: aheadPts,
                        casing: isDark ? .black : .white,
-                       color: .systemBlue,
+                       color: UIColor(hex: 0xFF8A1F),
                        width: 4)
 
             // Whole-route start (green) + end (red): start is the first
