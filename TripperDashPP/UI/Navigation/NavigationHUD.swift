@@ -69,17 +69,13 @@ struct NavigationHUD: View {
                 if let onEditRoute, nav.plan?.isEditableMidRide == true {
                     Button(action: onEditRoute) {
                         Label("Edit route", systemImage: "list.bullet")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
+                    .buttonStyle(SecondaryCTAButtonStyle(height: 52))
                 }
             }
             Spacer()
         }
-        .padding()
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .padding(16)
     }
 
     // MARK: - Subviews
@@ -118,20 +114,20 @@ struct NavigationHUD: View {
                 .font(.subheadline.weight(.semibold))
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.yellow.opacity(0.18), in: RoundedRectangle(cornerRadius: 12))
+        .foregroundStyle(Theme.warn)
+        .padding(.horizontal, 16).frame(minHeight: 44)
+        .background(Theme.warn.opacity(0.14), in: Capsule())
     }
 
     /// Final-destination arrival confirmation. Shown for a few seconds
     /// before MapPickerView auto-dismisses back to the picker.
     private var arrivedCard: some View {
         HStack(spacing: 14) {
-            Image(systemName: "flag.checkered.circle.fill")
-                .font(.system(size: 40, weight: .semibold))
-                .foregroundStyle(.green)
+            IconTile(systemImage: "flag.checkered", tint: Theme.ok,
+                     background: Theme.ok.opacity(0.16), size: 64)
             VStack(alignment: .leading, spacing: 4) {
                 Text("You've arrived")
-                    .font(.title2.weight(.semibold))
+                    .font(.title2.weight(.bold))
                 Text(nav.destination?.name ?? "Destination")
                     .font(.body)
                     .foregroundStyle(.secondary)
@@ -139,8 +135,8 @@ struct NavigationHUD: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(12)
-        .background(.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+        .padding(20)
+        .solidCard(cornerRadius: 28)
     }
 
     /// Multi-stop progress: "Stop 2 of 3 · next Slaný". Only shown when
@@ -155,48 +151,50 @@ struct NavigationHUD: View {
         }()
         return HStack(spacing: 8) {
             Image(systemName: "point.topleft.down.curvedto.point.bottomright.up")
-                .foregroundStyle(.blue)
+                .foregroundStyle(Theme.brandText)
             Text("Stop \(current) of \(total)")
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline.weight(.bold))
             Text("· next \(nextWaypointName)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
             Spacer(minLength: 0)
         }
-        .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.blue.opacity(0.10), in: RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal, 16).frame(minHeight: 40)
+        .background(Theme.surface2, in: Capsule())
     }
 
     private var maneuverCard: some View {
-        HStack(alignment: .center, spacing: 14) {
-            ZStack {
-                Circle().fill(.blue.opacity(0.15)).frame(width: 60, height: 60)
-                Image(systemName: upcomingManeuverSymbol)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(.blue)
-            }
+        HStack(alignment: .center, spacing: 16) {
+            Image(systemName: upcomingManeuverSymbol)
+                .font(.system(size: 36, weight: .bold))
+                .foregroundStyle(Theme.onBrand)
+                .frame(width: 76, height: 76)
+                .background(Theme.brand, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                .shadow(color: Theme.brand.opacity(0.35), radius: 12, y: 6)
             VStack(alignment: .leading, spacing: 4) {
                 Text(distanceToNext)
-                    .font(.title2.weight(.semibold))
+                    .font(.system(size: 40, weight: .bold, design: .rounded).monospacedDigit())
                     .foregroundStyle(.primary)
+                    .minimumScaleFactor(0.6)
+                    .lineLimit(1)
                 Text(nav.upcomingInstructions ?? "Continue")
-                    .font(.body)
+                    .font(.headline)
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
             Spacer(minLength: 0)
         }
-        .padding(12)
-        .background(.background, in: RoundedRectangle(cornerRadius: 14))
+        .padding(20)
+        .solidCard(cornerRadius: 28)
         .overlay(alignment: .topTrailing) {
             if nav.isOffRoute {
                 Label(nav.isRerouting ? "Rerouting…" : "Off route", systemImage: "exclamationmark.triangle.fill")
                     .font(.caption2.bold())
                     .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(.orange.opacity(0.2), in: Capsule())
-                    .foregroundStyle(.orange)
-                    .padding(6)
+                    .background(Theme.warn.opacity(0.18), in: Capsule())
+                    .foregroundStyle(Theme.warn)
+                    .padding(10)
             }
         }
     }
@@ -218,23 +216,26 @@ struct NavigationHUD: View {
         TimelineView(.periodic(from: .now, by: 1)) { _ in
             HStack(spacing: 0) {
                 etaSlot(title: "ETA", value: arrivalTime, icon: "flag.checkered")
-                Divider().frame(height: 32)
+                Rectangle().fill(Theme.hairline).frame(width: 1, height: 40)
                 etaSlot(title: "Remaining", value: timeRemaining, icon: "clock")
-                Divider().frame(height: 32)
+                Rectangle().fill(Theme.hairline).frame(width: 1, height: 40)
                 etaSlot(title: "Distance", value: distanceRemaining, icon: "ruler")
             }
-            .padding(12)
-            .background(.background, in: RoundedRectangle(cornerRadius: 14))
+            .padding(.vertical, 16)
+            .solidCard()
         }
     }
 
     private func etaSlot(title: String, value: String, icon: String) -> some View {
         VStack(spacing: 4) {
-            Image(systemName: icon).foregroundStyle(.secondary)
-            Text(value).font(.headline.monospacedDigit())
-            Text(title).font(.caption2).foregroundStyle(.secondary)
+            Label(title, systemImage: icon).labelStyle(.titleOnly).statLabelStyle()
+            Text(value)
+                .font(.system(.title2, design: .rounded).weight(.bold).monospacedDigit())
+                .minimumScaleFactor(0.7)
+                .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 
     /// Final-destination ETA — distinct from `etaCard`'s "ETA" slot,
@@ -252,16 +253,16 @@ struct NavigationHUD: View {
         TimelineView(.periodic(from: .now, by: 1)) { _ in
             HStack(spacing: 8) {
                 Image(systemName: "flag.checkered.circle.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(Theme.ok)
                 Text("Final ETA \(finalArrivalTime)")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.subheadline.weight(.bold).monospacedDigit())
                 Text("· \(finalTimeRemaining) left")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 0)
             }
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(.green.opacity(0.10), in: RoundedRectangle(cornerRadius: 12))
+            .padding(.horizontal, 16).frame(minHeight: 40)
+            .background(Theme.surface2, in: Capsule())
         }
     }
 
@@ -280,10 +281,10 @@ struct NavigationHUD: View {
                 position: nav.currentCoordinate
             )
             .frame(height: 150)
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            .clipShape(RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous))
             .overlay(
-                RoundedRectangle(cornerRadius: 14)
-                    .strokeBorder(.quaternary, lineWidth: 0.5)
+                RoundedRectangle(cornerRadius: Theme.cardRadius, style: .continuous)
+                    .strokeBorder(Theme.hairline, lineWidth: 1)
             )
         }
     }

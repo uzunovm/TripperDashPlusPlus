@@ -1017,7 +1017,6 @@ struct MapPickerView: View {
                 useCommaDecimal: status.dashNavSettings.decimalSeparator == .comma,
                 position: status.locationService.lastFix?.coordinate
             )
-            .padding(.horizontal, 12)
         }
         .frame(minHeight: geo.size.height, alignment: .top)
         }
