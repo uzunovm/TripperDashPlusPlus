@@ -440,6 +440,7 @@ final class AppStatus {
                               activeNavigator: activeNavigator)
         s.perspectiveEnabled = mapStyleSettings.perspective
         s.renderer = mapStyleSettings.renderer
+        s.smoothPosition = mapStyleSettings.smoothPosition
         s.bottomRow = dashNavSettings.bottomRow
         _mapViewSource = s
         return s
@@ -2626,6 +2627,13 @@ final class AppStatus {
     func setMapRenderer(_ renderer: MapStyleSettings.Renderer) {
         mapStyleSettings.renderer = renderer
         mapViewSource.renderer = renderer
+    }
+
+    /// Settings → Map → Smooth position. Persists and applies from the
+    /// next frame.
+    func setSmoothPosition(_ on: Bool) {
+        mapStyleSettings.smoothPosition = on
+        mapViewSource.smoothPosition = on
     }
 
     /// Settings → Map → Bottom row. Persists and applies from the next frame.

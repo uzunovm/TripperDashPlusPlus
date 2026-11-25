@@ -56,6 +56,19 @@ final class MapViewSource: NSObject, FrameSource {
     private var fixSubscription: LocationSubscription?
     private var headingSubscription: LocationSubscription?
     private var lastFix: Fix?
+    /// The fix this frame draws at: `lastFix`, or the predictor's
+    /// smoothed position (`smoothPosition`). Set once per tick.
+    private var renderFix: Fix?
+    /// Settings → Map → Smooth position (`PositionPredictor`).
+    var smoothPosition = true {
+        didSet {
+            guard smoothPosition != oldValue else { return }
+            predictor.reset()
+            log.info("Smooth position → \(self.smoothPosition, privacy: .public)")
+        }
+    }
+    private var predictor = PositionPredictor()
+    private var predictorLogAt = CACurrentMediaTime()
 
     /// Effective heading used to rotate the rendered frame (degrees,
     /// CW from north). Lerped per-tick toward `targetHeading`.
@@ -1135,6 +1148,14 @@ extension MapViewSource {
 
     private func handleFix(_ fix: Fix) {
         lastFix = fix
+        // The rendered position goes through PositionPredictor, which
+        // re-anchors on EVERY fix to the measured route position (never a
+        // `max`) and extrapolates at most 1.2 s / 20 m — the fix for the
+        // drift described below.
+        predictor.setRoute(routeDrawCoords)
+        predictor.ingest(PositionPredictor.Sample(
+            coordinate: fix.coordinate, accuracy: fix.horizontalAccuracy,
+            speed: fix.speed, course: fix.course, time: CACurrentMediaTime()))
         // The rider marker uses this fix directly.
         //
         // A MotionInterpolator used to sit here, dead-reckoning the displayed
@@ -1269,6 +1290,26 @@ extension MapViewSource {
         }
     }
 
+    /// This tick's draw position: the predictor's when smoothing (and its
+    /// route bearing as the heading target while snapped and moving),
+    /// else the raw fix.
+    private func updateRenderFix() {
+        guard let fix = lastFix else { renderFix = nil; return }
+        guard smoothPosition else { renderFix = fix; return }
+        predictor.setRoute(routeDrawCoords)
+        guard let out = predictor.predict(at: CACurrentMediaTime()) else { renderFix = fix; return }
+        renderFix = Fix(coordinate: out.coordinate, altitude: fix.altitude,
+                        horizontalAccuracy: fix.horizontalAccuracy, speed: fix.speed,
+                        course: fix.course, timestamp: fix.timestamp)
+        // Same speed gate as `recomputeHeading`: below it the compass rules.
+        if let h = out.headingDegrees, fix.speed >= 3 { targetHeading = h }
+        let now = CACurrentMediaTime()
+        if now - predictorLogAt >= 60 {
+            predictorLogAt = now
+            if let line = predictor.takeLogLine() { log.info("\(line, privacy: .public)") }
+        }
+    }
+
     private func tickOnMain() async {
         guard onFrame != nil else { return }
 
@@ -1286,6 +1327,7 @@ extension MapViewSource {
         // 1. Advance the per-tick animation state (heading + zoom lerps)
         //    every tick (4 Hz) so an in-progress rotation/zoom dribbles
         //    forward smoothly before we render.
+        updateRenderFix()
         updateHeading()
         updateZoom()
 
@@ -1438,7 +1480,7 @@ extension MapViewSource {
     /// background until they load.
     fileprivate func prepareVectorBase() async {
         pendingVectorBase = nil
-        guard usesVectorRenderer, let fix = lastFix else { return }
+        guard usesVectorRenderer, let fix = renderFix else { return }
         let rider = fix.coordinate
         let ground = perspectiveEnabled
         let canvas = ground ? DashPerspective.groundSize : frameSize
@@ -1580,7 +1622,7 @@ extension MapViewSource {
         // the route", 8/2026) — do NOT leave the frame on the bare void
         // colour (that's the black screen). Fall back to the vector-only
         // frame so the route line + slate map is always visible.
-        guard lastFix != nil else {
+        guard renderFix != nil else {
             drawVectorOnlyFrame(into: ctx)
             return
         }
@@ -1588,7 +1630,7 @@ extension MapViewSource {
         // back to base if the preferred sibling layer isn't baked yet.
         let layerBefore = activeLayer
         guard let cache = activeTileCache(forEffectiveZoom: effectiveZoom),
-              let fix = lastFix else {
+              let fix = renderFix else {
             drawVectorOnlyFrame(into: ctx)
             return
         }
@@ -1697,7 +1739,7 @@ extension MapViewSource {
     /// blocking the render loop. On-route this whole path is dormant, so
     /// it costs zero extra OSM fetches during normal navigation.
     private func drawOffCorridorFallbackFrame(into ctx: CGContext) {
-        guard let cache = routeTileCache, let fix = lastFix else {
+        guard let cache = routeTileCache, let fix = renderFix else {
             drawVectorOnlyFrame(into: ctx)
             return
         }
@@ -2452,7 +2494,7 @@ extension MapViewSource {
         target.setFillColor(currentStyle.vectorBackground)
         target.fill(CGRect(origin: .zero, size: mapCanvasSize))
 
-        guard let fix = lastFix, !routeDrawCoords.isEmpty else {
+        guard let fix = renderFix, !routeDrawCoords.isEmpty else {
             // Nothing useful to draw.
             if activeGround != nil { compositePerspective(into: ctx, tiles: nil, rider: nil) }
             return

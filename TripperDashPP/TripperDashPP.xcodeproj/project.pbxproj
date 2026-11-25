@@ -45,9 +45,11 @@
 		7EED00000000000000006C11 /* CompassTapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED00000000000000006C10 /* CompassTapeTests.swift */; };
 		7EED0000000000000000D1F1 /* ReconnectBudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED0000000000000000D1F0 /* ReconnectBudgetTests.swift */; };
 		800E681DE094F5C63AE73355 /* VectorTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4124AD46C78A895409A2EC19 /* VectorTile.swift */; };
+		8AB50B362593D1F60FFD10DA /* PositionPredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2159E421E070C5EC5415CA0 /* PositionPredictor.swift */; };
 		92045E918CE378FF82206B82 /* LabelPlacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5216222F47752FE39E88A0B4 /* LabelPlacer.swift */; };
 		92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */; };
 		9CA9127812AED7BB89D15D5F /* VectorTileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */; };
+		A45546479695D07885B24993 /* PositionPredictorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9806121ED5E7B0197418004B /* PositionPredictorTests.swift */; };
 		A486F0482FE2034700AA36C3 /* TripperDashPPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */; };
 		A486F0492FE2034700AA36C3 /* MapPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0442FE2034700AA36C3 /* MapPickerView.swift */; };
 		A486F04A2FE2034700AA36C3 /* AppStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0412FE2034700AA36C3 /* AppStatus.swift */; };
@@ -243,6 +245,7 @@
 		83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTileStore.swift; sourceTree = "<group>"; };
 		89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MVTDecoder.swift; sourceTree = "<group>"; };
 		934A896800410FD8ACEF5B0B /* LabelImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LabelImageCache.swift; sourceTree = "<group>"; };
+		9806121ED5E7B0197418004B /* PositionPredictorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PositionPredictorTests.swift; sourceTree = "<group>"; };
 		A41A9C4D2FE20258009BF005 /* TripperDashPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripperDashPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A486F0412FE2034700AA36C3 /* AppStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripperDashPPApp.swift; sourceTree = "<group>"; };
@@ -326,6 +329,7 @@
 		B1DEA1E700000000000000E0 /* MaxspeedParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxspeedParser.swift; sourceTree = "<group>"; };
 		B1DEA1E700000000000000F0 /* SpeedCameraAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedCameraAnnouncer.swift; sourceTree = "<group>"; };
 		B1DEA1E700000000000000F2 /* RouteProjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteProjection.swift; sourceTree = "<group>"; };
+		B2159E421E070C5EC5415CA0 /* PositionPredictor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PositionPredictor.swift; sourceTree = "<group>"; };
 		B5AB31EC8C62C55C0DCB6DDE /* mvt_14_8846_5552_prague.pbf.gz */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8846_5552_prague.pbf.gz; sourceTree = "<group>"; };
 		B7DA00000000000000000002 /* DashMediaControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashMediaControl.swift; sourceTree = "<group>"; };
 		BC4D3773F4BB2477C182602D /* VectorTileTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTileTests.swift; sourceTree = "<group>"; };
@@ -427,6 +431,7 @@
 				BC4D3773F4BB2477C182602D /* VectorTileTests.swift */,
 				6693E68267915667D23464E0 /* VectorMapRendererTests.swift */,
 				CC1A50B6C1D9F18D0122BAC6 /* LabelPlacerTests.swift */,
+				9806121ED5E7B0197418004B /* PositionPredictorTests.swift */,
 			);
 			path = TripperDashPPTests;
 			sourceTree = "<group>";
@@ -552,6 +557,7 @@
 				27EEE56A78B73982514109E8 /* RenderBudget.swift */,
 				5216222F47752FE39E88A0B4 /* LabelPlacer.swift */,
 				934A896800410FD8ACEF5B0B /* LabelImageCache.swift */,
+				B2159E421E070C5EC5415CA0 /* PositionPredictor.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -896,6 +902,7 @@
 				CE380CB8420FD90FB1324349 /* VectorTileTests.swift in Sources */,
 				F5D92ECD03EDEEB6AD7684C8 /* VectorMapRendererTests.swift in Sources */,
 				F8F98C5ED8A15817C7F6DE83 /* LabelPlacerTests.swift in Sources */,
+				A45546479695D07885B24993 /* PositionPredictorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1013,6 +1020,7 @@
 				D640B94084DDC96340118CED /* RenderBudget.swift in Sources */,
 				92045E918CE378FF82206B82 /* LabelPlacer.swift in Sources */,
 				30C5B0F61B7AB9148F9CA676 /* LabelImageCache.swift in Sources */,
+				8AB50B362593D1F60FFD10DA /* PositionPredictor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

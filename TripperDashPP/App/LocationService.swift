@@ -54,9 +54,9 @@ nonisolated struct Fix: Sendable, Equatable {
         timestamp = loc.timestamp
     }
 
-    /// Memberwise init. Was used by the since-removed motion interpolator to
-    /// synthesize a display `Fix` at an extrapolated coordinate while carrying
-    /// the real GPS-derived speed/course forward; no callers remain.
+    /// Memberwise init. `MapViewSource.updateRenderFix` builds the frame's
+    /// display `Fix` at the `PositionPredictor` coordinate, carrying the real
+    /// GPS speed / course forward.
     init(coordinate: CLLocationCoordinate2D,
          altitude: CLLocationDistance,
          horizontalAccuracy: CLLocationAccuracy,

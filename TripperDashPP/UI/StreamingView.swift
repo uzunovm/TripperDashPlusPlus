@@ -286,6 +286,12 @@ struct StreamingView: View {
                 )) {
                     Text("3D map")
                 }
+                Toggle(isOn: Binding(
+                    get: { status.mapStyleSettings.smoothPosition },
+                    set: { status.setSmoothPosition($0) }
+                )) {
+                    Text("Smooth position")
+                }
                 Picker("Bottom row", selection: Binding(
                     get: { status.dashNavSettings.bottomRow },
                     set: { status.setBottomRow($0) }
@@ -294,7 +300,7 @@ struct StreamingView: View {
                         Text(row.label).tag(row)
                     }
                 }
-                Text("Auto follows local sunrise and sunset from your GPS position. Vector draws sharp roads and upright labels at any rotation; Raster is the classic OpenStreetMap picture. 3D tilts the map towards the road ahead and flattens it when you zoom out. Route progress shows the compass in free ride.")
+                Text("Auto follows local sunrise and sunset from your GPS position. Vector draws sharp roads and upright labels at any rotation; Raster is the classic OpenStreetMap picture. 3D tilts the map towards the road ahead and flattens it when you zoom out. Smooth position keeps you on the route line and glides the map between GPS fixes. Route progress shows the compass in free ride.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(status.mapStyleSettings.renderer == .vector
