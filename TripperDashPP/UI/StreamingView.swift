@@ -272,11 +272,25 @@ struct StreamingView: View {
                     LabeledContent("Currently",
                                    value: status.effectiveMapStyle == .dark ? "Dark" : "Light")
                 }
+                Picker("Map renderer", selection: Binding(
+                    get: { status.mapStyleSettings.renderer },
+                    set: { status.setMapRenderer($0) }
+                )) {
+                    ForEach(MapStyleSettings.Renderer.allCases) { r in
+                        Text(r.label).tag(r)
+                    }
+                }
                 Toggle(isOn: Binding(
                     get: { status.mapStyleSettings.perspective },
                     set: { status.setMapPerspective($0) }
                 )) {
                     Text("3D map")
+                }
+                Toggle(isOn: Binding(
+                    get: { status.mapStyleSettings.smoothPosition },
+                    set: { status.setSmoothPosition($0) }
+                )) {
+                    Text("Smooth position")
                 }
                 Picker("Bottom row", selection: Binding(
                     get: { status.dashNavSettings.bottomRow },
@@ -286,8 +300,13 @@ struct StreamingView: View {
                         Text(row.label).tag(row)
                     }
                 }
-                Text("Auto follows local sunrise and sunset from your GPS position. 3D tilts the map towards the road ahead and flattens it when you zoom out. Route progress shows the compass in free ride.")
+                Text("Auto follows local sunrise and sunset from your GPS position. Vector draws sharp roads and upright labels at any rotation; Raster is the classic OpenStreetMap picture. 3D tilts the map towards the road ahead and flattens it when you zoom out. Smooth position keeps you on the route line and glides the map between GPS fixes. Route progress shows the compass in free ride.")
                     .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(status.mapStyleSettings.renderer == .vector
+                     ? "Map data © OpenStreetMap contributors. Vector tiles © OpenMapTiles, served by OpenFreeMap."
+                     : "Map data and tiles © OpenStreetMap contributors.")
+                    .font(.caption2)
                     .foregroundStyle(.secondary)
             }
 
@@ -372,11 +391,13 @@ private struct MapCacheSection: View {
             Button(role: .destructive) {
                 Task {
                     isClearing = true
-                    // Clear all three caches. Map tiles are the bulk;
+                    // Clear all caches (raster + vector tiles, limits, cameras). Map tiles are the bulk;
                     // clearing the speed-limit cache is also what fixes a
                     // stale pre-shadow-guard entry still showing a phantom
                     // limit (e.g. a 90 on a 50 street).
                     await TileDiskCache.shared.clearAll()
+                    await VectorTileDiskCache.shared.clearAll()
+                    VectorTileStore.shared.clearMemory()
                     await SpeedLimitService.shared.clearDiskCache()
                     await SpeedCameraService.shared.clearDiskCache()
                     await refresh()
@@ -409,7 +430,9 @@ private struct MapCacheSection: View {
         // Sum all three on-disk caches so the row reflects the true
         // footprint and the button enables whenever ANY cache has data
         // (not just map tiles).
-        let tiles = await TileDiskCache.shared.statsAll()
+        let raster = await TileDiskCache.shared.statsAll()
+        let vector = await VectorTileDiskCache.shared.stats()
+        let tiles = (count: raster.count + vector.count, bytes: raster.bytes + vector.bytes)
         let limits = await SpeedLimitService.shared.diskCacheStats()
         let cameras = await SpeedCameraService.shared.diskCacheStats()
         stats = (count: tiles.count + limits.count + cameras.count,

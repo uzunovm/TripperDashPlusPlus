@@ -66,7 +66,7 @@ def test_no_bare_return_leaves_black_frame():
 def test_missing_fix_falls_back_to_vector():
     """The no-GPS-fix guard must draw the vector frame, not return black."""
     body = _draw_tile_cache_body()
-    m = re.search(r"guard lastFix != nil else \{(.*?)\}", body, re.DOTALL)
+    m = re.search(r"guard (?:lastFix|renderFix) != nil else \{(.*?)\}", body, re.DOTALL)
     assert m, "no-fix guard not found in drawTileCacheFrame"
     assert "drawVectorOnlyFrame" in m.group(1), (
         "no-GPS-fix path must fall back to drawVectorOnlyFrame (was a bare "

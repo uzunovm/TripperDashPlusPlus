@@ -439,6 +439,8 @@ final class AppStatus {
         let s = MapViewSource(locationService: locationService,
                               activeNavigator: activeNavigator)
         s.perspectiveEnabled = mapStyleSettings.perspective
+        s.renderer = mapStyleSettings.renderer
+        s.smoothPosition = mapStyleSettings.smoothPosition
         s.bottomRow = dashNavSettings.bottomRow
         _mapViewSource = s
         return s
@@ -2618,6 +2620,20 @@ final class AppStatus {
     func setMapPerspective(_ on: Bool) {
         mapStyleSettings.perspective = on
         mapViewSource.perspectiveEnabled = on
+    }
+
+    /// Settings → Map → Map renderer. Persists and applies from the next
+    /// frame; switching to Raster bakes the current route's corridor.
+    func setMapRenderer(_ renderer: MapStyleSettings.Renderer) {
+        mapStyleSettings.renderer = renderer
+        mapViewSource.renderer = renderer
+    }
+
+    /// Settings → Map → Smooth position. Persists and applies from the
+    /// next frame.
+    func setSmoothPosition(_ on: Bool) {
+        mapStyleSettings.smoothPosition = on
+        mapViewSource.smoothPosition = on
     }
 
     /// Settings → Map → Bottom row. Persists and applies from the next frame.
