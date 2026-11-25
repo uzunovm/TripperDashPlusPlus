@@ -50,7 +50,7 @@ struct QuickAccessTiles: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 10) {
+            HStack(spacing: 8) {
                 tile(for: .home)
                 tile(for: .work)
             }
@@ -69,7 +69,7 @@ struct QuickAccessTiles: View {
                         ForEach(store.otherFavorites) { fav in
                             Button { pick(fav) } label: {
                                 HStack {
-                                    Image(systemName: fav.resolvedIconSymbol).frame(width: 24)
+                                    Image(systemName: fav.resolvedIconSymbol).foregroundStyle(Theme.brandText).frame(width: 24)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(fav.name).foregroundStyle(.primary)
                                         if let addr = fav.addressLine {
@@ -134,12 +134,10 @@ struct QuickAccessTiles: View {
     private func tile(for slot: QuickAccessSlot) -> some View {
         if let fav = store.favorite(in: slot) {
             Button { pick(fav) } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: slot.iconSymbol)
-                        .font(.title3)
-                        .foregroundStyle(Color.accentColor)
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(slot.displayName).font(.footnote.weight(.semibold))
+                HStack(spacing: 10) {
+                    IconTile(systemImage: slot.iconSymbol, size: 38)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(slot.displayName).font(.subheadline.weight(.semibold))
                         if let addr = fav.addressLine {
                             Text(addr).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                         } else {
@@ -150,10 +148,10 @@ struct QuickAccessTiles: View {
                     }
                     Spacer(minLength: 0)
                 }
-                .frame(maxWidth: .infinity, minHeight: 48)
+                .frame(maxWidth: .infinity, minHeight: 60)
                 .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
+                .background(Theme.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
             .buttonStyle(.plain)
             .contextMenu {
@@ -170,24 +168,23 @@ struct QuickAccessTiles: View {
             }
         } else {
             Button { onFillSlot(slot) } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: slot.iconSymbol)
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                    VStack(alignment: .leading, spacing: 1) {
-                        Text(slot.displayName).font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
-                        Text("Tap to set").font(.caption2).foregroundStyle(.tertiary)
+                HStack(spacing: 10) {
+                    IconTile(systemImage: slot.iconSymbol, tint: .secondary,
+                             background: Theme.surface2, size: 38)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(slot.displayName).font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                        Text("Tap to set").font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer(minLength: 0)
                 }
-                .frame(maxWidth: .infinity, minHeight: 48)
+                .frame(maxWidth: .infinity, minHeight: 60)
                 .padding(.horizontal, 10)
-                .padding(.vertical, 6)
                 .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
-                        .foregroundStyle(.secondary)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
+                        .foregroundStyle(.secondary.opacity(0.7))
                 )
+                .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
             .buttonStyle(.plain)
         }

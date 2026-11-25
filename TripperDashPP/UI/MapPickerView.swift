@@ -192,11 +192,10 @@ struct MapPickerView: View {
                         Spacer()
                         Text(err)
                             .font(.caption.monospaced())
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(.regularMaterial)
-                            .clipShape(.rect(cornerRadius: 8))
+                            .foregroundStyle(Theme.danger)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .glassCard(cornerRadius: 14)
                             .padding(.bottom, 12)
                     }
                 }
@@ -206,11 +205,11 @@ struct MapPickerView: View {
                 if let notice = status.widgetNotice {
                     VStack {
                         Label(notice, systemImage: "exclamationmark.triangle.fill")
-                            .font(.footnote)
-                            .foregroundStyle(.red)
-                            .padding(.horizontal, 12).padding(.vertical, 6)
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(Theme.danger)
+                            .padding(.horizontal, 14).padding(.vertical, 10)
                             .multilineTextAlignment(.center)
-                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .glassCard(cornerRadius: 16)
                             .padding(.horizontal, 16)
                             .padding(.top, 48)
                         Spacer()
@@ -219,7 +218,7 @@ struct MapPickerView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            controlButton
+            bottomDock
         }
         .toolbar {
             // The saved-routes and ride-history shortcuts only belong in the
@@ -568,7 +567,7 @@ struct MapPickerView: View {
                 }
             }
 
-            VStack(spacing: 10) {
+            VStack(spacing: 12) {
                 searchPill
                 QuickAccessTiles(
                     onPick: { fav in
@@ -583,12 +582,11 @@ struct MapPickerView: View {
                     maxListHeight: quickAccessListMaxHeight
                 )
                 .environment(status.navigationStore)
+                .padding(12)
+                .glassCard()
                 .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 14))
-                .padding(.horizontal, 10)
             }
-            .padding(.top, 6)
+            .padding(.top, 8)
 
             // Recenter FAB (bottom-right) + the compact preview card
             // (bottom, full-width) share the bottom overlay region.
@@ -598,7 +596,7 @@ struct MapPickerView: View {
                     HStack {
                         Spacer()
                         recenterButton
-                            .padding(.trailing, 14)
+                            .padding(.trailing, 16)
                     }
                 }
                 // Post-arrival ride summary. Shown ONLY back on the picker
@@ -619,7 +617,7 @@ struct MapPickerView: View {
                         // means it won't re-appear on the next app launch.
                         status.rideStats.acknowledgeSummary()
                     })
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 12)
                 }
                 if let dest = selectedDestination {
                     DestinationPreviewCard(
@@ -639,7 +637,7 @@ struct MapPickerView: View {
                     .environment(status.navigationStore)
                 }
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 12)
             .animation(.easeInOut(duration: 0.2), value: selectedDestination)
             .animation(.easeInOut(duration: 0.2), value: showRecenterButton)
             .animation(.easeInOut(duration: 0.2), value: status.rideStats.stats.startedAt)
@@ -674,7 +672,7 @@ struct MapPickerView: View {
     /// under-estimate (or the negative value on the first layout pass,
     /// before the geometry is measured) can't collapse the list.
     private var quickAccessListMaxHeight: CGFloat {
-        let chromeAboveList: CGFloat = 200
+        let chromeAboveList: CGFloat = 240
         let bottomMargin: CGFloat = 28
         return browsingAreaHeight - chromeAboveList - bottomMargin
     }
@@ -689,14 +687,9 @@ struct MapPickerView: View {
             }
         } label: {
             Image(systemName: "location.fill")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 44, height: 44)
-                .background(.regularMaterial, in: Circle())
-                .overlay(Circle().strokeBorder(.separator, lineWidth: 0.5))
-                .shadow(color: .black.opacity(0.18), radius: 6, y: 2)
+                .font(.system(size: 20, weight: .semibold))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(GlassCircleButtonStyle(size: 52, tint: Theme.brandText))
         .accessibilityLabel("Center on my location")
     }
 
@@ -915,15 +908,20 @@ struct MapPickerView: View {
 
     private var searchPill: some View {
         Button { showSearch = true } label: {
-            HStack(spacing: 10) {
+            HStack(spacing: 12) {
                 Image(systemName: "magnifyingglass")
-                Text("Where to?").foregroundStyle(.secondary)
+                    .font(.system(size: 19, weight: .bold))
+                    .foregroundStyle(Theme.brandText)
+                Text("Where to?")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
                 Spacer()
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 10)
-            .background(.regularMaterial, in: Capsule())
-            .padding(.horizontal, 10)
+            .padding(.horizontal, 20)
+            .frame(minHeight: Theme.ctaHeight)
+            .contentShape(Capsule())
+            .glassCard(cornerRadius: Theme.ctaHeight / 2)
+            .padding(.horizontal, 12)
         }
         .buttonStyle(.plain)
     }
@@ -1029,14 +1027,43 @@ struct MapPickerView: View {
 
     // MARK: - Control button
 
+    /// Bottom dock: an opaque sheet-like bar holding the phase's main
+    /// control (connect / start / hold-to-stop). Sits below the map, so the
+    /// map and its attribution keep their own safe area.
+    private var bottomDock: some View {
+        controlButton
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+            .frame(maxWidth: .infinity)
+            .background {
+                Theme.surface
+                    .overlay(alignment: .top) {
+                        Rectangle().fill(Theme.hairline).frame(height: 1)
+                    }
+                    .shadow(color: .black.opacity(0.12), radius: 12, y: -4)
+                    .ignoresSafeArea(edges: .bottom)
+            }
+    }
+
+    /// Progress row shown in the dock while connecting / reconnecting.
+    private func dockProgress(_ text: String, tint: Color) -> some View {
+        HStack(spacing: 10) {
+            ProgressView()
+            Text(text)
+                .font(.subheadline.weight(.semibold))
+                .multilineTextAlignment(.leading)
+        }
+        .frame(maxWidth: .infinity, minHeight: 48)
+        .padding(.horizontal, 16)
+        .background(tint.opacity(0.14), in: Capsule())
+    }
+
     @ViewBuilder
     private var controlButton: some View {
         switch (mode, status.bikeLink.state) {
         case (.transitioning, _):
-            HStack { ProgressView(); Text("Switching…") }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.gray.opacity(0.15))
+            dockProgress("Switching…", tint: .secondary)
 
         // Hold-to-stop: a gloved or mount-bumped tap must not end the ride
         // (no undo — re-plan, new MKDirections, new prerender).
@@ -1122,10 +1149,8 @@ struct MapPickerView: View {
                   systemImage: status.bikeLink.demoMode
                       ? "play.rectangle.on.rectangle"
                       : "antenna.radiowaves.left.and.right")
-                .frame(maxWidth: .infinity).padding()
-                .background(Color.accentColor.opacity(0.15))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PrimaryCTAButtonStyle())
         .confirmationDialog("Connect to which bike?",
                             isPresented: $showBikePicker,
                             titleVisibility: .visible) {
@@ -1145,20 +1170,16 @@ struct MapPickerView: View {
             ? "Waiting for Wi-Fi…"
             : (status.bikeLink.state == .connecting ? "Connecting…" : "Handshaking…")
         VStack(spacing: 8) {
-            HStack {
-                ProgressView()
-                Text(pendingAutoStart ? "\(base) navigation will start automatically" : base)
-            }
-            .frame(maxWidth: .infinity).padding()
-            .background(Color.orange.opacity(0.15))
+            dockProgress(pendingAutoStart ? "\(base) navigation will start automatically" : base,
+                         tint: Theme.brand)
 
             Button(role: .destructive) {
                 pendingAutoStart = false
                 status.bikeLink.disconnect()
             } label: {
                 Text("Cancel")
-                    .frame(maxWidth: .infinity).padding(.vertical, 8)
             }
+            .buttonStyle(SecondaryCTAButtonStyle(tint: Theme.danger, height: 48))
         }
     }
 
@@ -1166,22 +1187,18 @@ struct MapPickerView: View {
     @ViewBuilder
     private var reconnectingControl: some View {
         VStack(spacing: 8) {
-            HStack {
-                ProgressView()
-                // Distinguish "can't reach the dash" from "the dash is there
-                // but its K1G server stopped answering" — the second needs an
-                // ignition cycle, and retrying will never fix it on its own.
-                Text(status.bikeLink.dashUnresponsive
-                     ? "Dash not responding — try the ignition"
-                     : "Reconnecting to dash…")
-            }
-            .frame(maxWidth: .infinity).padding()
-            .background(Color.yellow.opacity(0.15))
+            // Distinguish "can't reach the dash" from "the dash is there
+            // but its K1G server stopped answering" — the second needs an
+            // ignition cycle, and retrying will never fix it on its own.
+            dockProgress(status.bikeLink.dashUnresponsive
+                         ? "Dash not responding — try the ignition"
+                         : "Reconnecting to dash…",
+                         tint: Theme.warn)
 
             Button(role: .destructive) { status.bikeLink.disconnect() } label: {
                 Text("Cancel")
-                    .frame(maxWidth: .infinity).padding(.vertical, 8)
             }
+            .buttonStyle(SecondaryCTAButtonStyle(tint: Theme.danger, height: 48))
         }
     }
 
@@ -1191,28 +1208,27 @@ struct MapPickerView: View {
     /// just wants the moving map on the bike.
     @ViewBuilder
     private var connectedIdleControl: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 8) {
             Text("Dash connected — pick a destination above")
-                .font(.footnote)
+                .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
-                .background(Color.green.opacity(0.12))
 
             Button {
                 Task { @MainActor in await status.startFreeRide() }
             } label: {
                 Label("Start free ride (map only)", systemImage: "map.fill")
-                    .frame(maxWidth: .infinity).padding(.vertical, 10)
-                    .background(Color.accentColor.opacity(0.15))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(PrimaryCTAButtonStyle())
 
             Button(role: .destructive) { status.bikeLink.disconnect() } label: {
                 Text("Disconnect")
-                    .frame(maxWidth: .infinity).padding(.vertical, 8)
+                    .font(.headline)
+                    .foregroundStyle(Theme.danger)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
         }
     }
 
@@ -1224,11 +1240,9 @@ struct MapPickerView: View {
             if let plan, ready { startNavigation(plan: plan) }
         } label: {
             Label(ready ? "Start navigation" : "Calculating route…",
-                  systemImage: ready ? "play.circle.fill" : "hourglass")
-                .frame(maxWidth: .infinity).padding()
-                .background((ready ? Color.red : Color.gray).opacity(0.15))
+                  systemImage: ready ? "play.fill" : "hourglass")
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PrimaryCTAButtonStyle())
         .disabled(!ready)
     }
 
@@ -1767,15 +1781,19 @@ private struct HoldToConfirmButton: View {
 
     var body: some View {
         Label(title, systemImage: systemImage)
-            .frame(maxWidth: .infinity).padding()
+            .font(.headline)
+            .foregroundStyle(Theme.danger)
+            .frame(maxWidth: .infinity, minHeight: Theme.ctaHeight)
             .background {
                 ZStack {
-                    Color.red.opacity(0.15)
-                    Color.red.opacity(0.45)
+                    Theme.danger.opacity(0.14)
+                    Theme.danger.opacity(0.35)
                         .scaleEffect(x: progress, y: 1, anchor: .leading)
                 }
+                .clipShape(Capsule())
             }
-            .contentShape(Rectangle())
+            .overlay(Capsule().strokeBorder(Theme.danger, lineWidth: 1.5))
+            .contentShape(Capsule())
             // perform fires once per press, so holding past 1 s can't
             // re-trigger. Generous maximumDistance: a gloved finger drifts.
             .onLongPressGesture(minimumDuration: Self.holdDuration, maximumDistance: 40) {
@@ -1805,27 +1823,34 @@ private struct StatusBanner: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Circle().fill(color).frame(width: 10, height: 10)
-            Text(label).font(.subheadline.weight(.medium))
-            Spacer()
+            HStack(spacing: 8) {
+                Circle().fill(color).frame(width: 8, height: 8)
+                    .background(Circle().fill(color.opacity(0.25)).frame(width: 16, height: 16))
+                Text(label).font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 14)
+            .frame(minHeight: 34)
+            .background(color.opacity(0.14), in: Capsule())
+            Spacer(minLength: 8)
             if let ssid {
                 Text(ssid).font(.caption.monospaced()).foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(.thinMaterial)
+        .padding(.vertical, 8)
     }
 
     private var color: Color {
         switch state {
         case .disconnected: .gray
-        case .wifiJoining:  .yellow
-        case .handshaking:  .orange
-        case .reconnecting: .yellow
-        case .connected:    .blue
-        case .streaming:    .green
-        case .error:        .red
+        case .wifiJoining:  Theme.warn
+        case .handshaking:  Theme.brand
+        case .reconnecting: Theme.warn
+        case .connected:    Theme.connected
+        case .streaming:    Theme.ok
+        case .error:        Theme.danger
         }
     }
 
