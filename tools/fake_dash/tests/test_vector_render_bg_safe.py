@@ -24,6 +24,8 @@ VECTOR_FILES = [
     "Map/MVTDecoder.swift",
     "Map/ProtobufReader.swift",
     "Map/RenderBudget.swift",
+    "Map/LabelPlacer.swift",
+    "Map/LabelImageCache.swift",
 ]
 
 FORBIDDEN_IMPORTS = {"Metal", "MetalKit", "CoreImage", "MapKit", "SpriteKit", "SceneKit"}
@@ -61,3 +63,11 @@ def test_vector_mode_bakes_no_raster_corridor():
     mvs = _src("Map/MapViewSource.swift")
     assert "usesVectorRenderer" in decl_body(mvs, "func scheduleTileCacheRebuild(")
     assert "usesVectorRenderer" in decl_body(mvs, "func extendTileCache(")
+
+
+def test_labels_respect_the_budget_and_the_turn_card():
+    src = _src("Map/MapViewSource.swift")
+    body = decl_body(src, "fileprivate func drawVectorLabels(")
+    assert "vectorBudget.labels" in body
+    assert "navCardCenter" in body and "navCardRadius" in body
+    assert "LabelPlacer.candidates(" in body and "labelPlacer.place(" in body

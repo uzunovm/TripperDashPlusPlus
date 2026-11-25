@@ -10,6 +10,7 @@
 		08637C8D11C4EDA8BF33BAD8 /* mvt_14_8846_5552_prague.pbf.gz in Resources */ = {isa = PBXBuildFile; fileRef = B5AB31EC8C62C55C0DCB6DDE /* mvt_14_8846_5552_prague.pbf.gz */; };
 		2080DF2674B3B8F090CF71D6 /* MVTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */; };
 		2668E3B5EF6E54D959A960C2 /* mvt_14_8874_5591_rural.pbf in Resources */ = {isa = PBXBuildFile; fileRef = 4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */; };
+		30C5B0F61B7AB9148F9CA676 /* LabelImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934A896800410FD8ACEF5B0B /* LabelImageCache.swift */; };
 		33B2A54C592E9DA4ECCB9591 /* mvt_14_8848_5555_prague.pbf in Resources */ = {isa = PBXBuildFile; fileRef = 74BFF8467E95E5589790132A /* mvt_14_8848_5555_prague.pbf */; };
 		5A11F00000000000000000A2 /* SupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A11F00000000000000000A1 /* SupportView.swift */; };
 		5C17000000000000000000A1 /* RideIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C17000000000000000000A0 /* RideIntents.swift */; };
@@ -44,6 +45,7 @@
 		7EED00000000000000006C11 /* CompassTapeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED00000000000000006C10 /* CompassTapeTests.swift */; };
 		7EED0000000000000000D1F1 /* ReconnectBudgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EED0000000000000000D1F0 /* ReconnectBudgetTests.swift */; };
 		800E681DE094F5C63AE73355 /* VectorTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4124AD46C78A895409A2EC19 /* VectorTile.swift */; };
+		92045E918CE378FF82206B82 /* LabelPlacer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5216222F47752FE39E88A0B4 /* LabelPlacer.swift */; };
 		92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BE7CA0C7A776DB0BCB03055 /* MVTDecoderTests.swift */; };
 		9CA9127812AED7BB89D15D5F /* VectorTileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */; };
 		A486F0482FE2034700AA36C3 /* TripperDashPPApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */; };
@@ -146,6 +148,7 @@
 		F00DBABE00000000DEADBF04 /* TileColorTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADBF04 /* TileColorTransform.swift */; };
 		F00DBABE00000000DEADC001 /* DashNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = CAFEFEED00000000DEADC001 /* DashNotice.swift */; };
 		F5D92ECD03EDEEB6AD7684C8 /* VectorMapRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6693E68267915667D23464E0 /* VectorMapRendererTests.swift */; };
+		F8F98C5ED8A15817C7F6DE83 /* LabelPlacerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1A50B6C1D9F18D0122BAC6 /* LabelPlacerTests.swift */; };
 		FE70000000000000000000A1 /* GPXParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000A0 /* GPXParser.swift */; };
 		FE70000000000000000000B1 /* SavedRoutesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000B0 /* SavedRoutesStore.swift */; };
 		FE70000000000000000000B2 /* SavedRoutePreviewMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE70000000000000000000B3 /* SavedRoutePreviewMap.swift */; };
@@ -203,6 +206,7 @@
 		27EEE56A78B73982514109E8 /* RenderBudget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RenderBudget.swift; sourceTree = "<group>"; };
 		4124AD46C78A895409A2EC19 /* VectorTile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTile.swift; sourceTree = "<group>"; };
 		4AD5FB072B2FD7C5F02F9B95 /* mvt_14_8874_5591_rural.pbf */ = {isa = PBXFileReference; includeInIndex = 1; path = mvt_14_8874_5591_rural.pbf; sourceTree = "<group>"; };
+		5216222F47752FE39E88A0B4 /* LabelPlacer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LabelPlacer.swift; sourceTree = "<group>"; };
 		5A11F00000000000000000A1 /* SupportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
 		5A11F00000000000000000A3 /* Tips.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Tips.storekit; sourceTree = "<group>"; };
 		5C17000000000000000000A0 /* RideIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideIntents.swift; sourceTree = "<group>"; };
@@ -238,6 +242,7 @@
 		7EED0000000000000000D1F0 /* ReconnectBudgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconnectBudgetTests.swift; sourceTree = "<group>"; };
 		83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = VectorTileStore.swift; sourceTree = "<group>"; };
 		89B0AF0EC1AC427CB063BAF2 /* MVTDecoder.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MVTDecoder.swift; sourceTree = "<group>"; };
+		934A896800410FD8ACEF5B0B /* LabelImageCache.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LabelImageCache.swift; sourceTree = "<group>"; };
 		A41A9C4D2FE20258009BF005 /* TripperDashPP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripperDashPP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A486F0412FE2034700AA36C3 /* AppStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStatus.swift; sourceTree = "<group>"; };
 		A486F0422FE2034700AA36C3 /* TripperDashPPApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripperDashPPApp.swift; sourceTree = "<group>"; };
@@ -335,6 +340,7 @@
 		CAFEFEED00000000DEADBF03 /* MapStyleResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapStyleResolver.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADBF04 /* TileColorTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TileColorTransform.swift; sourceTree = "<group>"; };
 		CAFEFEED00000000DEADC001 /* DashNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashNotice.swift; sourceTree = "<group>"; };
+		CC1A50B6C1D9F18D0122BAC6 /* LabelPlacerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LabelPlacerTests.swift; sourceTree = "<group>"; };
 		D3D300000000000000000001 /* DashPerspective.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspective.swift; sourceTree = "<group>"; };
 		D3D300000000000000000003 /* DashPerspectiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashPerspectiveTests.swift; sourceTree = "<group>"; };
 		ED17000000000000000000A0 /* EditRouteSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRouteSheet.swift; sourceTree = "<group>"; };
@@ -420,6 +426,7 @@
 				AE1BF9D8AF5844F3D59DB3A3 /* Fixtures */,
 				BC4D3773F4BB2477C182602D /* VectorTileTests.swift */,
 				6693E68267915667D23464E0 /* VectorMapRendererTests.swift */,
+				CC1A50B6C1D9F18D0122BAC6 /* LabelPlacerTests.swift */,
 			);
 			path = TripperDashPPTests;
 			sourceTree = "<group>";
@@ -543,6 +550,8 @@
 				83B9E2FD4DED89A9879E0E22 /* VectorTileStore.swift */,
 				1D051E7F6392165D3BDFEF93 /* VectorMapRenderer.swift */,
 				27EEE56A78B73982514109E8 /* RenderBudget.swift */,
+				5216222F47752FE39E88A0B4 /* LabelPlacer.swift */,
+				934A896800410FD8ACEF5B0B /* LabelImageCache.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -886,6 +895,7 @@
 				92A1FF1AE33234EA45DB30B3 /* MVTDecoderTests.swift in Sources */,
 				CE380CB8420FD90FB1324349 /* VectorTileTests.swift in Sources */,
 				F5D92ECD03EDEEB6AD7684C8 /* VectorMapRendererTests.swift in Sources */,
+				F8F98C5ED8A15817C7F6DE83 /* LabelPlacerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1001,6 +1011,8 @@
 				9CA9127812AED7BB89D15D5F /* VectorTileStore.swift in Sources */,
 				BBE49B00C8011E62E55BE63F /* VectorMapRenderer.swift in Sources */,
 				D640B94084DDC96340118CED /* RenderBudget.swift in Sources */,
+				92045E918CE378FF82206B82 /* LabelPlacer.swift in Sources */,
+				30C5B0F61B7AB9148F9CA676 /* LabelImageCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -528,6 +528,7 @@ final class MapViewSource: NSObject, FrameSource {
             log.info("Map renderer → \(self.renderer.rawValue, privacy: .public)")
             vectorBudget = RenderBudget()
             pendingVectorBase = nil
+            labelPlacer.reset()
             // Raster needs its corridor bake, which Vector mode skipped:
             // bake it now (vector-only frames until it lands).
             if renderer == .raster, let route = currentRoute {
@@ -547,7 +548,10 @@ final class MapViewSource: NSObject, FrameSource {
     /// This tick's vector base map, rendered off the main actor before the
     /// synchronous frame draw (`tickOnMain` → `drawVectorFrame`).
     private var pendingVectorBase: (image: CGImage, rider: CLLocationCoordinate2D,
-                                    zoom: CGFloat, ground: Bool)?
+                                    zoom: CGFloat, ground: Bool, tiles: [VectorTile])?
+    /// Which names show, kept stable frame to frame (`LabelPlacer`).
+    private var labelPlacer = LabelPlacer()
+    private let labelImages = LabelImageCache()
     /// Tilt drawn on the last frame (degrees). Follows the zoom curve down
     /// at once, but climbs at most `tiltStepUp` per frame after a coverage
     /// cap lifts, so the view doesn't snap.
@@ -1474,7 +1478,7 @@ extension MapViewSource {
         // A 3D toggle during the await changes the canvas: drop the frame's
         // base rather than draw it at the wrong size.
         guard ground == perspectiveEnabled, usesVectorRenderer else { return }
-        pendingVectorBase = (image, rider, zoom, ground)
+        pendingVectorBase = (image, rider, zoom, ground, tiles)
     }
 
     @concurrent nonisolated private static func renderVector(_ renderer: VectorMapRenderer,
@@ -1491,8 +1495,52 @@ extension MapViewSource {
             return
         }
         pendingVectorBase = nil
-        drawProjectedMap(.vector(image: base.image, zoom: base.zoom), riderCoord: base.rider, into: ctx)
+        drawProjectedMap(.vector(image: base.image, zoom: base.zoom, tiles: base.tiles), riderCoord: base.rider, into: ctx)
         drawVectorAttribution(into: ctx)
+    }
+
+    /// Place and draw this frame's names (`LabelPlacer`): geo-anchored
+    /// like the cameras — the flat offset goes through `screenPoint`, so in
+    /// 3D they sit on the warped ground — but upright and constant-size.
+    /// Kept off the glass edge, the dash's turn card (while navigating),
+    /// the puck and the attribution. Skipped while the render budget has
+    /// labels off.
+    fileprivate func drawVectorLabels(tiles: [VectorTile], rider: CLLocationCoordinate2D,
+                                      zoom: CGFloat, into ctx: CGContext) {
+        guard vectorBudget.labels else {
+            labelPlacer.reset()
+            return
+        }
+        let dark = currentStyle == .dark
+        let palette: VectorPalette = dark ? .dark : .light
+        var byId: [String: VectorLabel] = [:]
+        let candidates = LabelPlacer.candidates(
+            tiles: tiles, center: VectorProjection.world(rider), headingDegrees: lastHeading,
+            zoom: zoom, frame: frameSize,
+            project: { self.screenPoint(flatX: Double($0.x), flatY: Double($0.y)) },
+            size: { l in
+                let s = self.labelImages.size(l, palette: palette, dark: dark)
+                if s != nil { byId["\(l.kind.rawValue)|\(l.text)"] = l }
+                return s
+            })
+        guard !candidates.isEmpty || !labelPlacer.shown.isEmpty else { return }
+        let puck = screenPoint(flatX: 0, flatY: 0) ?? puckCenter
+        let pr = 14 * puckScale
+        var discs: [(center: CGPoint, radius: CGFloat)] = [(puck, pr)]
+        if activeNavigator?.isNavigating == true {
+            discs.append((Self.navCardCenter, Self.navCardRadius))
+        }
+        let area = LabelPlacer.Area(
+            glassCenter: Self.visibleCenter, glassRadius: Self.visibleRadius,
+            discs: discs,
+            // The attribution line (`drawVectorAttribution`), top centre.
+            rects: [CGRect(x: Self.visibleCenter.x - 90, y: 0, width: 180, height: 22)],
+            clearance: Self.overlayClearance)
+        for c in labelPlacer.place(candidates, in: area) {
+            guard let l = byId[c.name],
+                  let img = labelImages.image(l, palette: palette, dark: dark) else { continue }
+            drawImageUIKit(img, in: c.rect, ctx: ctx)
+        }
     }
 
     /// "© OpenMapTiles © OpenStreetMap", small, top centre: the one band
@@ -1695,7 +1743,8 @@ extension MapViewSource {
         case raster(tile: RouteTile, image: CGImage, underlays: [(RouteTile, CGImage)])
         /// `zoom` is the zoom the image was rendered at (the tick's, which a
         /// dash zoom press during the off-main render may since have moved).
-        case vector(image: CGImage, zoom: CGFloat)
+        /// `tiles` carry the label points (`drawVectorLabels`).
+        case vector(image: CGImage, zoom: CGFloat, tiles: [VectorTile])
     }
 
     private func drawProjectedMap(
@@ -1717,7 +1766,7 @@ extension MapViewSource {
             pxPerDegLon = tile.pxPerDegLon
             pxPerDegLat = tile.pxPerDegLat
             drawZoom = drawScale(of: tile)
-        case .vector(_, let zoom):
+        case .vector(_, let zoom, _):
             pxPerDegLon = WebMercator.pixelsPerDegreeLongitude(zoom: Self.baseLayerZoom)
             pxPerDegLat = WebMercator.pixelsPerDegreeLatitude(latitude: riderCoord.latitude,
                                                               zoom: Self.baseLayerZoom)
@@ -1748,7 +1797,7 @@ extension MapViewSource {
 
         // Map into the ground buffer when tilted, else into the frame.
         let target = activeGround ?? ctx
-        if case .vector(let image, _) = base {
+        if case .vector(let image, _, _) = base {
             // Rendered for exactly this canvas, rider at `mapAnchor`.
             drawImageUIKit(image, in: CGRect(origin: .zero, size: mapCanvasSize), ctx: target)
         }
@@ -1926,6 +1975,11 @@ extension MapViewSource {
                 // coverage cap on the tilt.
                 compositePerspective(into: ctx, tiles: nil, rider: nil)
             }
+        }
+        // Vector names: upright, constant size, over the (warped) map and
+        // route, under the markers and the puck.
+        if case .vector(_, let zoom, let tiles) = base {
+            drawVectorLabels(tiles: tiles, rider: riderCoord, zoom: zoom, into: ctx)
         }
 
         // Speed-camera POI markers — geo-anchored (they move/rotate WITH
